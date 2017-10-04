@@ -9,7 +9,7 @@ class ConfigTest extends \MediaWikiTestCase {
 
 	public function testChangeIniFile() {
 		$this->setMwGlobals(
-			[ 'egLDAPProviderINIFile' =>  __DIR__ . '/data/test.ini' ]
+			[ 'LDAPProviderINIFile' => __DIR__ . '/data/test.ini' ]
 		);
 
 		$config = new Config();
@@ -19,7 +19,7 @@ class ConfigTest extends \MediaWikiTestCase {
 
 	public function testOverrideByGlobalVars() {
 		$this->setMwGlobals(
-			[ 'egLDAPProvider'.Config::USER =>  'THIS_TEST_USER' ]
+			[ 'LDAPProvider'.Config::USER => 'THIS_TEST_USER' ]
 		);
 
 		$configFactory = \MediaWiki\MediaWikiServices::getInstance()->getConfigFactory();

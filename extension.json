@@ -15,7 +15,7 @@
 			"i18n"
 		]
 	},
-	"config_prefix": "egLDAPProvider",
+	"config_prefix": "LDAPProvider",
 	"config": {
 		"INIFile": {
 			"value": "ldapprovider.ini",

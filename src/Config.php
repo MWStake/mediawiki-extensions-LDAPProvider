@@ -11,7 +11,7 @@ class Config extends \MultiConfig {
 	const BASE_DN = 'basedn';
 
 	public function __construct() {
-		$globalVarsConfig = new \GlobalVarConfig( 'egLDAPProvider' );
+		$globalVarsConfig = new \GlobalVarConfig( 'LDAPProvider' );
 		$iniFileConfig = $this->makeINIFileConfig(
 			$globalVarsConfig->get( self::INI_FILE )
 		);
@@ -30,6 +30,12 @@ class Config extends \MultiConfig {
 		return new self();
 	}
 
+	/**
+	 * Given ini file, get object.
+	 *
+	 * @param string $iniFilePath path to ini file
+	 * @return HashConfig
+	 */
 	protected function makeINIFileConfig( $iniFilePath ) {
 		$iniConfig = parse_ini_file( $iniFilePath );
 		return new \HashConfig( $iniConfig );
