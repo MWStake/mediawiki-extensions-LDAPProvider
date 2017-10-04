@@ -1,0 +1,33 @@
+{
+	"name": "LDAPProvider",
+	"version": "1.0.0-alpha",
+	"author": [
+		"Cindy Cicalese",
+		"Mark A. Hershberger",
+		"Robert Vogel"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:LDAPProvider",
+	"descriptionmsg": "ldapprovider-desc",
+	"license-name": "GPL-2.0",
+	"type": "other",
+	"MessagesDirs": {
+		"LDAPProvider": [
+			"i18n"
+		]
+	},
+	"config_prefix": "egLDAPProvider",
+	"config": {
+		"INIFile": {
+			"value": "ldapprovider.ini",
+			"public": false,
+			"path": true,
+			"description": "Path to the main INI configuration file",
+			"descriptionmsg": "ldapprovider-config-inifile"
+		}
+	},
+	"ConfigRegistry": {
+		"ldapprovider": "MediaWiki\\Extension\\LDAPProvider\\Config::newInstance"
+	},
+	"load_composer_autoloader" : true,
+	"manifest_version": 2
+}
