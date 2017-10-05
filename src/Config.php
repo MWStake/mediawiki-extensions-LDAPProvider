@@ -2,24 +2,13 @@
 
 namespace MediaWiki\Extension\LDAPProvider;
 
-class Config extends \MultiConfig {
+class Config extends \GlobalVarConfig {
 
-	const INI_FILE = 'INIFile';
-	const SERVER = 'server';
-	const USER = 'user';
-	const PASSWORD = 'pass';
-	const BASE_DN = 'basedn';
+	const MAIN_CLIENT_INI_FILE = 'MainClientINIFile';
+	const CLIENT_REGISTRY = 'ClientRegistry';
 
 	public function __construct() {
-		$globalVarsConfig = new \GlobalVarConfig( 'LDAPProvider' );
-		$iniFileConfig = $this->makeINIFileConfig(
-			$globalVarsConfig->get( self::INI_FILE )
-		);
-
-		parent::__construct( [
-			$globalVarsConfig,
-			$iniFileConfig
-		] );
+		parent::__construct( 'LDAPProvider' );
 	}
 
 	/**
@@ -29,16 +18,4 @@ class Config extends \MultiConfig {
 	public static function newInstance() {
 		return new self();
 	}
-
-	/**
-	 * Given ini file, get object.
-	 *
-	 * @param string $iniFilePath path to ini file
-	 * @return HashConfig
-	 */
-	protected function makeINIFileConfig( $iniFilePath ) {
-		$iniConfig = parse_ini_file( $iniFilePath );
-		return new \HashConfig( $iniConfig );
-	}
-
 }

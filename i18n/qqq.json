@@ -5,5 +5,5 @@
 		]
 	},
 	"ldapprovider-desc": "{{desc|name=LDAPProvider|url=https://www.mediawiki.org/wiki/Extension:LDAPProvider}}",
-	"ldapprovider-config-inifile": "Description of the configuration variable that points to the main configuration INI file"
+	"ldapprovider-config-mainclientinifile": "Description of the configuration variable that points to the main configuration INI file"
 }

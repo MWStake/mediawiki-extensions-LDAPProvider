@@ -15,8 +15,16 @@
 			"i18n"
 		]
 	},
+	"callback": "MediaWiki\\Extension\\LDAPProvider\\Setup::onRegistration",
 	"config_prefix": "LDAPProvider",
 	"config": {
+		"MainClientINIFile": {
+			"value": "ldapprovider.ini",
+			"public": false,
+			"path": true,
+			"description": "Path to the main INI configuration file",
+			"descriptionmsg": "ldapprovider-config-mainclientinifile"
+		},
 		"INIFile": {
 			"value": "ldapprovider.ini",
 			"public": false,
