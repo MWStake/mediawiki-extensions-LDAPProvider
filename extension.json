@@ -16,6 +16,9 @@
 		]
 	},
 	"callback": "MediaWiki\\Extension\\LDAPProvider\\Setup::onRegistration",
+	"Hooks": {
+		"LoadExtensionSchemaUpdates": "MediaWiki\\Extension\\LDAPProvider\\Setup::onLoadExtensionSchemaUpdates"
+	},
 	"config_prefix": "LDAPProvider",
 	"config": {
 		"MainClientINIFile": {

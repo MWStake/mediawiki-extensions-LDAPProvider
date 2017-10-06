@@ -46,12 +46,7 @@ class Client {
 	}
 
 	protected function initConnection() {
-		MediaWiki\suppressWarnings();
-		$this->connection = ldap_connect(
-			$this->config->get( ClientConfig::SERVER ),
-			$this->config->get( ClientConfig::PORT )
-		);
-		MediaWiki\restoreWarnings();
+		$this->connection = $this->makeNewConnection();
 	}
 
 	protected function setConnectionOptions() {
@@ -133,5 +128,30 @@ class Client {
 		$this->logger->debug( "Ran LDAP search for '$match' in $runTime seconds.\n" );
 
 		return $entry;
+	}
+
+	/**
+	 * Method to determine whether a LDAP password is valid for a specific user
+	 * on the current connection
+	 * @param string $username
+	 * @param string $password
+	 * @return boolan
+	 */
+	public function canBindAs( $username, $password ) {
+		return ldap_bind( $this->makeNewConnection(), $password, $username );
+	}
+
+	/**
+	 *
+	 * @return resource
+	 */
+	protected function makeNewConnection() {
+		MediaWiki\suppressWarnings();
+		$ret = ldap_connect(
+			$this->config->get( ClientConfig::SERVER ),
+			$this->config->get( ClientConfig::PORT )
+		);
+		MediaWiki\restoreWarnings();
+		return  $ret;
 	}
 }
