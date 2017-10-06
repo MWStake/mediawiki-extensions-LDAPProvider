@@ -5,7 +5,7 @@ namespace MediaWiki\Extension\LDAPProvider;
 class Setup {
 	public static function onRegistration() {
 		$GLOBALS['LDAPProviderClientRegistry'] = [
-			'*' => function() {
+			'LDAP' => function() {
 				$configFactory = \MediaWiki\MediaWikiServices::getInstance()->getConfigFactory();
 				$extensionConfig = $configFactory->makeConfig( 'ldapprovider' );
 				$mainClientConfig = new INIClientConfig(
