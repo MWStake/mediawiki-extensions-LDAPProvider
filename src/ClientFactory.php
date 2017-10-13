@@ -26,6 +26,10 @@ class ClientFactory {
 	 */
 	protected static $instance = null;
 
+	/**
+	 *
+	 * @return ClientFactory
+	 */
 	public static function getInstance() {
 		if( self::$instance === null ) {
 			self::$instance = new self( $GLOBALS );
@@ -51,5 +55,13 @@ class ClientFactory {
 			}
 		}
 		return $this->clients[$domain];
+	}
+
+	/**
+	 *
+	 * @return string[]
+	 */
+	public function getConfiguredDomains() {
+		return array_keys( $this->domainClientFactories );
 	}
 }
