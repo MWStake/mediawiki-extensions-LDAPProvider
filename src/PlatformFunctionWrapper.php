@@ -105,8 +105,8 @@ class PlatformFunctionWrapper {
 	 * @since 4.0.4
 	 * @since 5.0
 	 */
-	public function ldap_set_option( $link_identifier, $option, $newval ) {
-		return ldap_set_option( $link_identifier, $option, $newval );
+	public function ldap_set_option( $link_identifier, int $option, $newval ) {
+		return \ldap_set_option( $link_identifier, $option, $newval );
 	}
 
 	/**
@@ -121,8 +121,8 @@ class PlatformFunctionWrapper {
 	 * @since 4.0
 	 * @since 5.0
 	 */
-	public function ldap_bind( $link_identifier, $bind_rdn, $bind_password ) {
-		return ldap_bind( $link_identifier, $bind_rdn, $bind_password );
+	public function ldap_bind( $link_identifier, $bind_rdn = null, $bind_password = null ) {
+		return \ldap_bind( $link_identifier, $bind_rdn, $bind_password );
 	}
 
 	/**
@@ -135,7 +135,7 @@ class PlatformFunctionWrapper {
 	 * @return string string error message.
 	 */
 	public function ldap_error( $link_identifier ) {
-		return ldap_error( $link_identifier );
+		return \ldap_error( $link_identifier );
 	}
 
 	/**
@@ -150,7 +150,7 @@ class PlatformFunctionWrapper {
 	 * @since 5.0
 	 */
 	public function ldap_errno( $link_identifier ) {
-		return ldap_errno( $link_identifier );
+		return \ldap_errno( $link_identifier );
 	}
 
 	/**
@@ -161,7 +161,7 @@ class PlatformFunctionWrapper {
 	 * @return bool
 	 */
 	public function ldap_start_tls( $link ) {
-		return ldap_start_tls( $link );
+		return \ldap_start_tls( $link );
 	}
 
 	/**
@@ -225,8 +225,8 @@ class PlatformFunctionWrapper {
 	 * @since 4.0
 	 * @since 5.0
 	 */
-	public function ldap_search( $link_identifier, $base_dn, $filter, $attributes, $attrsonly, $sizelimit, $timelimit, $deref ) {
-		return ldap_search( $link_identifier, $base_dn, $filter, $attributes, $attrsonly, $sizelimit, $timelimit, $deref );
+	public function ldap_search( $link_identifier, $base_dn, $filter, array $attributes = null, $attrsonly = null, $sizelimit = null, $timelimit = null, $deref = null ) {
+		return \ldap_search( $link_identifier, $base_dn, $filter, $attributes, $attrsonly, $sizelimit, $timelimit, $deref );
 	}
 
 	/**
@@ -258,7 +258,7 @@ class PlatformFunctionWrapper {
 	 * @since 5.0
 	 */
 	public function ldap_get_entries( $link_identifier, $result_identifier ) {
-		return ldap_get_entries( $link_identifier, $result_identifier );
+		return \ldap_get_entries( $link_identifier, $result_identifier );
 	}
 
 	/**
@@ -292,7 +292,7 @@ class PlatformFunctionWrapper {
 	 * If no arguments are specified then the link identifier of the already
 	 * opened link will be returned.
 	 */
-	public function ldap_connect( $host, $port ) {
-		return ldap_connect( $host, $port );
+	public function ldap_connect( $hostname = null, $port = 389 ) {
+		return \ldap_connect( $host, $port );
 	}
 }

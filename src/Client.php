@@ -35,9 +35,12 @@ class Client {
 	 * @param \Config $config
 	 * @param PlatformFunctionWrapper $fw
 	 */
-	public function __construct( $config, $fw ) {
+	public function __construct( $config, $fw = null ) {
 		$this->config = $config;
 		$this->fw = $fw;
+		if( $this->fw === null ) {
+			$this->fw = new PlatformFunctionWrapper();
+		}
 		$this->logger = LoggerFactory::getInstance( __CLASS__ );
 	}
 
@@ -124,7 +127,7 @@ class Client {
 
 		if ( !$res ) {
 			wfProfileOut( __METHOD__ );
-			throw new MWException(
+			throw new \MWException(
 				"Error in LDAP search: " . $this->fw->ldap_error( $this->connection )
 			);
 		}
@@ -154,12 +157,12 @@ class Client {
 	 * @return resource
 	 */
 	protected function makeNewConnection() {
-		MediaWiki\suppressWarnings();
+		\MediaWiki\suppressWarnings();
 		$ret = $this->fw->ldap_connect(
 			$this->config->get( ClientConfig::SERVER ),
 			$this->config->get( ClientConfig::PORT )
 		);
-		MediaWiki\restoreWarnings();
+		\MediaWiki\restoreWarnings();
 		return  $ret;
 	}
 }
