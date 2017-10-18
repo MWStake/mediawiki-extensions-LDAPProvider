@@ -5,5 +5,7 @@
 		]
 	},
 	"ldapprovider-desc": "Provides a common infratructure to connect to a LDAP resource and run queries against it",
-	"ldapprovider-config-mainclientinifile": "Path to the main INI configuration file"
+	"ldapprovider-config-mainclientinifile": "Path to the main INI configuration file",
+	"ldapprovider-config-clientregistry": "Allows registration of custom clients",
+	"ldapprovider-config-domainconfigs": "Stores per domain configs"
 }

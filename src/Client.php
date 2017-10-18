@@ -3,6 +3,7 @@
 namespace MediaWiki\Extension\LDAPProvider;
 
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\Extension\LDAPProvider\Serverlist;
 
 class Client {
 
@@ -158,10 +159,9 @@ class Client {
 	 */
 	protected function makeNewConnection() {
 		\MediaWiki\suppressWarnings();
-		$ret = $this->fw->ldap_connect(
-			$this->config->get( ClientConfig::SERVER ),
-			$this->config->get( ClientConfig::PORT )
-		);
+		$servers = (string)(new Serverlist( $this->config ));
+		$this->logger->debug( "Connecting to '$servers'" );
+		$ret = $this->fw->ldap_connect( $servers );
 		\MediaWiki\restoreWarnings();
 		return  $ret;
 	}
