@@ -1,7 +1,7 @@
 {
 	"name": "mediawiki/ldap-provider",
 	"extra": {
-		"mw-name": "LDAPProvider"
+		"installer-name": "LDAPProvider"
 	},
 	"license": "GPL-2.0+",
 	"type": "mediawiki-extension",
