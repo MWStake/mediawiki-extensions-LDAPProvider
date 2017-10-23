@@ -2,7 +2,7 @@
 
 namespace MediaWiki\Extension\LDAPProvider;
 
-class ClientConfig extends \HashConfig {
+class ClientConfig extends DomainConfig {
 	const SERVER = 'server';
 	const USER = 'user';
 	const PASSWORD = 'pass';

@@ -3,6 +3,7 @@
 namespace MediaWiki\Extension\LDAPProvider;
 
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\Extension\LDAPProvider\Serverlist;
 
 class Client {
 
@@ -20,6 +21,12 @@ class Client {
 
 	/**
 	 *
+	 * @var PlatformFunctionWrapper
+	 */
+	protected $fw = null;
+
+	/**
+	 *
 	 * @var \Psr\Log\LoggerInterface
 	 */
 	protected $logger = null;
@@ -27,9 +34,14 @@ class Client {
 	/**
 	 *
 	 * @param \Config $config
+	 * @param PlatformFunctionWrapper $fw
 	 */
-	public function __construct( $config ) {
+	public function __construct( $config, $fw = null ) {
 		$this->config = $config;
+		$this->fw = $fw;
+		if( $this->fw === null ) {
+			$this->fw = new PlatformFunctionWrapper();
+		}
 		$this->logger = LoggerFactory::getInstance( __CLASS__ );
 	}
 
@@ -50,13 +62,13 @@ class Client {
 	}
 
 	protected function setConnectionOptions() {
-		ldap_set_option( $this->connection, LDAP_OPT_PROTOCOL_VERSION, 3 );
-		ldap_set_option( $this->connection, LDAP_OPT_REFERRALS, 0 );
+		$this->fw->ldap_set_option( $this->connection, LDAP_OPT_PROTOCOL_VERSION, 3 );
+		$this->fw->ldap_set_option( $this->connection, LDAP_OPT_REFERRALS, 0 );
 
 		if( $this->config->has( ClientConfig::OPTIONS ) ) {
 			$options = $this->config->get( ClientConfig::OPTIONS );
 			foreach ( $options  as $key => $value ) {
-				$ret = ldap_set_option( $this->connection, constant( $key ), $value );
+				$ret = $this->fw->ldap_set_option( $this->connection, constant( $key ), $value );
 				if ( $ret === false ) {
 					$message = 'Can\'t set option to LDAP connection!';
 					$this->logger->debug( $message, [ $key, $value ] );
@@ -75,10 +87,10 @@ class Client {
 			$pssword = $this->config->get( ClientConfig::PASSWORD );
 		}
 
-		$ret = ldap_bind( $this->connection, $password, $username );
+		$ret = $this->fw->ldap_bind( $this->connection, $password, $username );
 		if( $ret === false ) {
-			$error = ldap_error( $this->connection );
-			$errno = ldap_errno( $this->connection );
+			$error = $this->fw->ldap_error( $this->connection );
+			$errno = $this->fw->ldap_errno( $this->connection );
 			throw new \MWException( "Could not bind to LDAP: ($errno) $error" );
 		}
 	}
@@ -87,7 +99,7 @@ class Client {
 		if( $this->config->has( ClientConfig::ENC_TYPE ) ) {
 			$encType = $this->config->get( ClientConfig::ENC_TYPE );
 			if( $encType === EncType::TLS ) {
-				$ret = ldap_start_tls( $this->connection );
+				$ret = $this->fw->ldap_start_tls( $this->connection );
 				if ( $ret === false ) {
 					throw new \MWException( 'Could not start TLS!' );
 				}
@@ -107,7 +119,7 @@ class Client {
 		wfProfileIn( __METHOD__ );
 		$runTime = -microtime( true );
 
-		$res = ldap_search(
+		$res = $this->fw->ldap_search(
 			$this->connection,
 			$this->config->get( ClientConfig::BASE_DN ),
 			$match,
@@ -116,12 +128,12 @@ class Client {
 
 		if ( !$res ) {
 			wfProfileOut( __METHOD__ );
-			throw new MWException(
-				"Error in LDAP search: " . ldap_error( $this->connection )
+			throw new \MWException(
+				"Error in LDAP search: " . $this->fw->ldap_error( $this->connection )
 			);
 		}
 
-		$entry = ldap_get_entries( $this->connection, $res );
+		$entry = $this->fw->ldap_get_entries( $this->connection, $res );
 
 		$runTime += microtime( true );
 		wfProfileOut( __METHOD__ );
@@ -138,7 +150,7 @@ class Client {
 	 * @return boolan
 	 */
 	public function canBindAs( $username, $password ) {
-		return ldap_bind( $this->makeNewConnection(), $password, $username );
+		return $this->fw->ldap_bind( $this->makeNewConnection(), $password, $username );
 	}
 
 	/**
@@ -146,12 +158,11 @@ class Client {
 	 * @return resource
 	 */
 	protected function makeNewConnection() {
-		MediaWiki\suppressWarnings();
-		$ret = ldap_connect(
-			$this->config->get( ClientConfig::SERVER ),
-			$this->config->get( ClientConfig::PORT )
-		);
-		MediaWiki\restoreWarnings();
+		\MediaWiki\suppressWarnings();
+		$servers = (string)(new Serverlist( $this->config ));
+		$this->logger->debug( "Connecting to '$servers'" );
+		$ret = $this->fw->ldap_connect( $servers );
+		\MediaWiki\restoreWarnings();
 		return  $ret;
 	}
 }

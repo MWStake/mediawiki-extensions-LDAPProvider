@@ -5,5 +5,7 @@
 		]
 	},
 	"ldapprovider-desc": "{{desc|name=LDAPProvider|url=https://www.mediawiki.org/wiki/Extension:LDAPProvider}}",
-	"ldapprovider-config-mainclientinifile": "Description of the configuration variable that points to the main configuration INI file"
+	"ldapprovider-config-mainclientinifile": "Description of the configuration variable that points to the main configuration INI file",
+	"ldapprovider-config-clientregistry": "Description of the configuration variable that allows registration of custom clients",
+	"ldapprovider-config-domainconfigs": "Description of the configuration variable that stores per domain configs"
 }

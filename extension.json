@@ -4,7 +4,7 @@
 	"author": [
 		"Cindy Cicalese",
 		"[http://mediawiki.org/wiki/User:MarkAHershberger Mark A. Hershberger]",
-		"Robert Vogel"
+		"[http://mediawiki.org/wiki/User:Osnard Robert Vogel]"
 	],
 	"url": "https://www.mediawiki.org/wiki/Extension:LDAPProvider",
 	"descriptionmsg": "ldapprovider-desc",
@@ -28,12 +28,15 @@
 			"description": "Path to the main INI configuration file",
 			"descriptionmsg": "ldapprovider-config-mainclientinifile"
 		},
-		"INIFile": {
-			"value": "ldapprovider.ini",
-			"public": false,
-			"path": true,
-			"description": "Path to the main INI configuration file",
-			"descriptionmsg": "ldapprovider-config-inifile"
+		"ClientRegistry": {
+			"value": [],
+			"description": "Allows registration of custom clients",
+			"descriptionmsg": "ldapprovider-config-clientregistry"
+		},
+		"DomainConfigs": {
+			"value": [],
+			"description": "Stores per domain configuration",
+			"descriptionmsg": "ldapprovider-config-domainconfigs"
 		}
 	},
 	"ConfigRegistry": {
