@@ -2,7 +2,7 @@
 
 namespace MediaWiki\Extension\LDAPProvider\Tests;
 
-use \MediaWiki\Extension\LDAPProvider\Client;
+use MediaWiki\Extension\LDAPProvider\Client;
 use MediaWiki\Extension\LDAPProvider\ClientConfig;
 
 class ClientTest extends \PHPUnit_Framework_TestCase {
