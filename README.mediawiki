@@ -3,4 +3,42 @@
 This extension provides a common infratructure to connect to a LDAP resource
 and run queries against it.
 
+=== Installation ===
+
+This extension can be installed by creating a composer.local.json file in your MediaWiki's installation directory containing the following (or merging this into your current composer.local.json):
+
+<source lang="json">
+{
+	"require": {
+		"mediawiki/ldap-provider": "dev-master"
+	},
+	"config": {
+		"prefer": "source"
+	}
+}
+</source>
+
+Note that <code>"prefer": "source"</code> causes composer to use a clone of the git repository if it can.
+
 === Configuration ===
+
+In the simplest case where you have a single LDAP server to query, you need to simply specify your LDAP server and the ini file.
+
+Out of the box, LDAPProvider points to the [http://www.forumsys.com/ Forum Systems] [http://www.forumsys.com/tutorials/integration-how-to/ldap/online-ldap-test-server/ online ldap test server] in the included <code>ldapprovider.ini</code>.  This is a simple ini file that demonstrates the configuration:
+
+<source lang="ini">
+[main]
+	server=ldap.forumsys.com
+	user='cn=read-only-admin,dc=example,dc=com'
+	pass=password
+	basedn='dc=example,dc=com'
+</source>
+
+Other configurations are possible.
+
+=== Testing ===
+
+Tests are provided.  These can be run using the following in your MediaWiki's installation directory:
+
+    $ ./tests/phpunit/phpunit.php extensions/LDAPProvider
+
