@@ -31,9 +31,16 @@ class ConvertLdapAuthenticationConfig extends Maintenance {
 		'wgLDAPPort' => 'connection.port',
 		'wgLDAPEncryptionType' => 'connection.enctype',
 		'wgLDAPBaseDNs' => 'connection.basedn',
+		'wgLDAPGroupBaseDNs' => 'connection.groupbasedn',
+		'wgLDAPUserBaseDNs' => 'connection.userbasedn',
+		//'wgLDAPGroupObjectclass' => 'basic.group.objectclass',
+		//'wgLDAPGroupAttribute' => 'basic.group.attribute',
+		//'wgLDAPGroupsUseMemberOf' => 'basic.group.use-member-of',
 		'wgLDAPPreferences' => 'userinfo.attributes-map',
 		'wgLDAPRequiredGroups' => 'authorization.rules.groups.required',
-		'wgLDAPExcludedGroups' => 'authorization.rules.groups.excluded'
+		'wgLDAPExcludedGroups' => 'authorization.rules.groups.excluded',
+		'wgLDAPLocallyManagedGroups' => 'groupsync.localy-managed',
+		//'wgLDAPGroupsPrevail' => 'groupsync.prevail'
 	];
 
 	public function execute() {
