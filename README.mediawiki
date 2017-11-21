@@ -36,6 +36,8 @@ Out of the box, LDAPProvider points to the [http://www.forumsys.com/ Forum Syste
 
 Other configurations are possible.
 
+ $LDAPProviderDomainConfigs = "/etc/mediawiki/mediawiki.ldap.json";
+
 === Testing ===
 
 Tests are provided.  These can be run using the following in your MediaWiki's installation directory:

@@ -27,7 +27,7 @@ class ClientFactory {
 	protected static $instance = null;
 
 	/**
-	 *
+	 * Accessor for the singleton object
 	 * @return ClientFactory
 	 */
 	public static function getInstance() {
@@ -40,28 +40,23 @@ class ClientFactory {
 	/**
 	 *
 	 * @param string $domain
-	 * @return \MediaWiki\Extension\LDAPProvider\Client
+	 * @return Client
 	 */
 	public function getForDomain( $domain ) {
 		if( !isset( $this->clients[$domain] ) ) {
 			if( !isset( $this->domainClientFactories[$domain] ) ) {
-				throw new \MWException( "No client factory set for domain '$domain'" );
+				$clientConfig = DomainConfigFactory::getInstance()->factory( $domain, 'connection' );
+				$this->clients[$domain] = new Client( $clientConfig );
 			}
-			$callback = $this->domainClientFactories[$domain];
-			$this->clients[$domain] = $callback();
+			else {
+				$callback = $this->domainClientFactories[$domain];
+				$this->clients[$domain] = $callback();
+			}
 
 			if( $this->clients[$domain] instanceof Client === false ) {
 				throw new \MWException( "Client factory for domain '$domain' did not return a valid Client object" );
 			}
 		}
 		return $this->clients[$domain];
-	}
-
-	/**
-	 *
-	 * @return string[]
-	 */
-	public function getConfiguredDomains() {
-		return array_keys( $this->domainClientFactories );
 	}
 }

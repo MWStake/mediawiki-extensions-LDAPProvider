@@ -2,11 +2,13 @@
 
 namespace MediaWiki\Extension\LDAPProvider;
 
-class ClientConfig extends DomainConfig {
+class ClientConfig {
 	const SERVER = 'server';
 	const USER = 'user';
 	const PASSWORD = 'pass';
 	const BASE_DN = 'basedn';
+	const GROUP_BASE_DN = 'groupbasedn';
+	const USER_BASE_DN = 'userbasedn';
 	const OPTIONS = 'options';
 	const PORT = 'port';
 	const ENC_TYPE = 'enctype';

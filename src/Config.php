@@ -4,7 +4,6 @@ namespace MediaWiki\Extension\LDAPProvider;
 
 class Config extends \GlobalVarConfig {
 
-	const MAIN_CLIENT_INI_FILE = 'MainClientINIFile';
 	const CLIENT_REGISTRY = 'ClientRegistry';
 	const DOMAIN_CONFIGS = 'DomainConfigs';
 

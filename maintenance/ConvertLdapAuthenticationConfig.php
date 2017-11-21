@@ -39,7 +39,7 @@ class ConvertLdapAuthenticationConfig extends Maintenance {
 		'wgLDAPPreferences' => 'userinfo.attributes-map',
 		'wgLDAPRequiredGroups' => 'authorization.rules.groups.required',
 		'wgLDAPExcludedGroups' => 'authorization.rules.groups.excluded',
-		'wgLDAPLocallyManagedGroups' => 'groupsync.localy-managed',
+		'wgLDAPLocallyManagedGroups' => 'groupsync.locally-managed',
 		//'wgLDAPGroupsPrevail' => 'groupsync.prevail'
 	];
 

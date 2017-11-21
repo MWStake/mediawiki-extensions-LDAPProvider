@@ -15,32 +15,39 @@
 			"i18n"
 		]
 	},
-	"callback": "MediaWiki\\Extension\\LDAPProvider\\Setup::onRegistration",
 	"Hooks": {
-		"LoadExtensionSchemaUpdates": "MediaWiki\\Extension\\LDAPProvider\\Setup::onLoadExtensionSchemaUpdates"
+		"LoadExtensionSchemaUpdates": "MediaWiki\\Extension\\LDAPProvider\\Hook\\LoadExtensionSchemaUpdates::callback"
 	},
 	"config_prefix": "LDAPProvider",
 	"config": {
-		"MainClientINIFile": {
-			"value": "ldapprovider.ini",
-			"public": false,
-			"path": true,
-			"description": "Path to the main INI configuration file",
-			"descriptionmsg": "ldapprovider-config-mainclientinifile"
-		},
 		"ClientRegistry": {
 			"value": [],
 			"description": "Allows registration of custom clients",
 			"descriptionmsg": "ldapprovider-config-clientregistry"
 		},
 		"DomainConfigs": {
-			"value": [],
+			"value": "",
+			"public": false,
+			"path": true,
 			"description": "Stores per domain configuration",
 			"descriptionmsg": "ldapprovider-config-domainconfigs"
 		}
 	},
 	"ConfigRegistry": {
 		"ldapprovider": "MediaWiki\\Extension\\LDAPProvider\\Config::newInstance"
+	},
+	"attributes": {
+		"LDAPProvider": {
+			"DefaultSettings": {
+				"connection": {
+					"port": 389,
+					"options": [],
+					"enctype": "clear",
+					"groupbasedn": "",
+					"userbasedn": ""
+				}
+			}
+		}
 	},
 	"load_composer_autoloader" : true,
 	"manifest_version": 2
