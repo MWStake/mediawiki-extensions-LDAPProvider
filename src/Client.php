@@ -110,18 +110,22 @@ class Client {
 	/**
 	 * Perform an LDAP search
 	 * @param string $match desired in ldap search format
+	 * @param string $basedn The base DN to search in
 	 * @param array $attrs list of attributes to get, default to '*'
 	 * @return array
 	 */
-	public function search( $match, $attrs = [ "*" ] ) {
+	public function search( $match, $basedn = null, $attrs = [ "*" ] ) {
 		$this->init();
+		if( $basedn === null ) {
+			$basedn = $this->config->get( ClientConfig::BASE_DN );
+		}
 
 		wfProfileIn( __METHOD__ );
 		$runTime = -microtime( true );
 
 		$res = $this->fw->ldap_search(
 			$this->connection,
-			$this->config->get( ClientConfig::BASE_DN ),
+			$basedn,
 			$match,
 			$attrs
 		);
@@ -140,6 +144,26 @@ class Client {
 		$this->logger->debug( "Ran LDAP search for '$match' in $runTime seconds.\n" );
 
 		return $entry;
+	}
+
+	protected $userInfos = [];
+
+	/**
+	 *
+	 * @param string $username
+	 * @param string $userBaseDN
+	 * @return array
+	 */
+	public function getUserInfo( $username, $userBaseDN = '' ) {
+		$cacheKey = $username.$userBaseDN;
+		if( isset( $this->userInfos[$cacheKey] ) ) {
+			$this->userInfos[$cacheKey];
+		}
+
+		$userInfoRequest = new UserInfoRequest( $this, $this->config );
+		$this->userInfos[$cacheKey] = $userInfoRequest->getUserInfo( $username );
+
+		return $this->userInfos[$cacheKey];
 	}
 
 	/**

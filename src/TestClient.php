@@ -30,7 +30,7 @@ class TestClient extends Client {
 		return call_user_func( $this->canBindAsCallback, $username, $password );
 	}
 
-	public function search( $match, $attrs = array() ) {
-		return call_user_func( $this->searchCallback, $match, $attrs );
+	public function search( $match, $basedn = null, $attrs = array() ) {
+		return call_user_func( $this->searchCallback, $match, $basedn, $attrs );
 	}
 }

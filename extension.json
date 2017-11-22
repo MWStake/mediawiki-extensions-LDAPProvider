@@ -44,7 +44,8 @@
 					"options": [],
 					"enctype": "clear",
 					"groupbasedn": "",
-					"userbasedn": ""
+					"userbasedn": "",
+					"searchattribute": ""
 				}
 			}
 		}
