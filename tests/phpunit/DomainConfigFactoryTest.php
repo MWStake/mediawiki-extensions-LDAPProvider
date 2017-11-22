@@ -9,7 +9,7 @@ class DomainConfigFactoryTest extends \MediaWikiTestCase {
 
 	public function testDefaultConfig() {
 		$dcf = $this->makeDomainConfigFactory();
-		$config = $dcf->factory( 'LDAP', 'connection' );
+		$config = $dcf->factory( 'LDAP', ClientConfig::DOMAINCONFIG_SECTION );
 
 		$this->assertEquals( 'clear', $config->get( ClientConfig::ENC_TYPE ) );
 		$this->assertEquals( 'someDN', $config->get( ClientConfig::USER_BASE_DN ) );

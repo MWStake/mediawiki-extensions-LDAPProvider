@@ -45,7 +45,10 @@ class ClientFactory {
 	public function getForDomain( $domain ) {
 		if( !isset( $this->clients[$domain] ) ) {
 			if( !isset( $this->domainClientFactories[$domain] ) ) {
-				$clientConfig = DomainConfigFactory::getInstance()->factory( $domain, 'connection' );
+				$clientConfig = DomainConfigFactory::getInstance()->factory(
+					$domain,
+					ClientConfig::DOMAINCONFIG_SECTION
+				);
 				$this->clients[$domain] = new Client( $clientConfig );
 			}
 			else {

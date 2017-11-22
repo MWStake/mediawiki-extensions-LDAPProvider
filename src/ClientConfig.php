@@ -3,6 +3,7 @@
 namespace MediaWiki\Extension\LDAPProvider;
 
 class ClientConfig {
+	const DOMAINCONFIG_SECTION = 'connection';
 	const SERVER = 'server';
 	const USER = 'user';
 	const PASSWORD = 'pass';
