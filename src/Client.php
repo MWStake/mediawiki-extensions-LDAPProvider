@@ -189,4 +189,25 @@ class Client {
 		\MediaWiki\restoreWarnings();
 		return  $ret;
 	}
+
+	protected $userGroupLists = [];
+
+	/**
+	 *
+	 * @param \User $user
+	 * @param string $groupBaseDN
+	 * @return GroupList
+	 */
+	public function getUserGroups( $user, $groupBaseDN = '' ) {
+		$cacheKey = $username.$groupBaseDN;
+		if( isset( $this->userInfos[$cacheKey] ) ) {
+			$this->userInfos[$cacheKey];
+		}
+
+		$userInfoRequest = new UserGroupsRequest( $this, $this->config );
+		$this->userInfos[$cacheKey] = $userInfoRequest->getUserGroups( $username );
+
+		return $this->userInfos[$cacheKey];
+	}
+
 }

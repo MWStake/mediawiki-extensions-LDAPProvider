@@ -69,7 +69,9 @@ abstract class UserLoggedIn {
 	 * @return boolean
 	 */
 	public function process() {
-		$this->findDomainForUser();
+		if( !$this->findDomainForUser() ) {
+			return true;
+		};
 		$this->createLdapClientForDomain();
 
 		return $this->doProcess();
@@ -96,12 +98,20 @@ abstract class UserLoggedIn {
 		return new \GlobalVarConfig();
 	}
 
+	/**
+	 *
+	 * @return boolean
+	 */
 	protected function findDomainForUser() {
 		$userDomainStore = new UserDomainStore(
 			MediaWikiServices::getInstance()->getDBLoadBalancer()
 		);
 
 		$this->domain = $userDomainStore->getDomainForUser( $this->user );
+		if( $this->domain === null ) {
+			return false;
+		}
+		return true;
 	}
 
 	protected function createLdapClientForDomain() {
