@@ -27,10 +27,10 @@ class TestClient extends Client {
 	}
 
 	public function getUserGroups( $user, $groupBaseDN = '' ) {
-		return call_user_func( $this->callbacks['getUserGroups'], $match, $basedn, $attrs );
+		return call_user_func( $this->callbacks['getUserGroups'], $user, $groupBaseDN = '' );
 	}
 
 	public function getUserInfo( $username, $userBaseDN = '' ) {
-		return call_user_func( $this->callbacks['getUserInfo'], $match, $basedn, $attrs );
+		return call_user_func( $this->callbacks['getUserInfo'], $username, $userBaseDN = '' );
 	}
 }
