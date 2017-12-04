@@ -6,14 +6,14 @@ use \MediaWiki\Extension\LDAPProvider\TestClient;
 
 class TestClientTest extends \PHPUnit_Framework_TestCase {
 	public function testCallbacks() {
-		$testClient = new TestClient(
-			function( $username, $password ) {
+		$testClient = new TestClient( [
+			'canBindAs' => function( $username, $password ) {
 				return strtoupper( $username );
 			},
-			function( $match, $attribs ) {
+			'search' => function( $match, $attribs ) {
 				return strtoupper( $match );
 			}
-		);
+		] );
 
 		$this->assertEquals(
 			'USER',

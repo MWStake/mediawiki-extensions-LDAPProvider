@@ -6,31 +6,31 @@ class TestClient extends Client {
 
 	/**
 	 *
-	 * @var callable
+	 * @var callable[]
 	 */
-	protected $canBindAsCallback = null;
+	protected $callbacks = [];
 
 	/**
 	 *
-	 * @var callable
+	 * @param callable[] $searchCallback
 	 */
-	protected $searchCallback = null;
-
-	/**
-	 *
-	 * @param callable $canBindAsCallback
-	 * @param callable $searchCallback
-	 */
-	public function __construct( $canBindAsCallback, $searchCallback ) {
-		$this->canBindAsCallback = $canBindAsCallback;
-		$this->searchCallback = $searchCallback;
+	public function __construct( $callbacks ) {
+		$this->callbacks = $callbacks;
 	}
 
 	public function canBindAs( $username, $password ) {
-		return call_user_func( $this->canBindAsCallback, $username, $password );
+		return call_user_func( $this->callbacks['canBindAs'], $username, $password );
 	}
 
 	public function search( $match, $basedn = null, $attrs = array() ) {
-		return call_user_func( $this->searchCallback, $match, $basedn, $attrs );
+		return call_user_func( $this->callbacks['search'], $match, $basedn, $attrs );
+	}
+
+	public function getUserGroups( $user, $groupBaseDN = '' ) {
+		return call_user_func( $this->callbacks['getUserGroups'], $match, $basedn, $attrs );
+	}
+
+	public function getUserInfo( $username, $userBaseDN = '' ) {
+		return call_user_func( $this->callbacks['getUserInfo'], $match, $basedn, $attrs );
 	}
 }
