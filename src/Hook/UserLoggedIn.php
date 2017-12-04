@@ -5,6 +5,7 @@ namespace MediaWiki\Extension\LDAPProvider\Hook;
 use MediaWiki\Extension\LDAPProvider\UserDomainStore;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Extension\LDAPProvider\ClientFactory;
+use MediaWiki\Extension\LDAPProvider\DomainConfigFactory;
 
 abstract class UserLoggedIn {
 
@@ -37,6 +38,12 @@ abstract class UserLoggedIn {
 	 * @var string
 	 */
 	protected $domain = '';
+
+	/**
+	 *
+	 * @var \Config
+	 */
+	protected $domainConfig = null;
 
 	/**
 	 *
@@ -73,6 +80,7 @@ abstract class UserLoggedIn {
 			return true;
 		};
 		$this->createLdapClientForDomain();
+		$this->setSuitableDomainConfig();
 
 		return $this->doProcess();
 	}
@@ -119,4 +127,16 @@ abstract class UserLoggedIn {
 
 		$this->ldapClient = $ldapClientFactory->getForDomain( $this->domain );
 	}
+
+	protected function setSuitableDomainConfig() {
+		$this->domainConfig = DomainConfigFactory::getInstance()->factory(
+			$this->domain,
+			$this->getDomainConfigSection()
+		);
+	}
+
+	/**
+	 * @return string
+	 */
+	protected abstract function getDomainConfigSection();
 }
