@@ -85,7 +85,7 @@ class Client {
 		}
 		$password = null;
 		if ( $this->config->has( ClientConfig::PASSWORD ) ) {
-			$pssword = $this->config->get( ClientConfig::PASSWORD );
+			$password = $this->config->get( ClientConfig::PASSWORD );
 		}
 
 		$ret = $this->fw->ldap_bind( $this->connection, $password, $username );
@@ -195,11 +195,11 @@ class Client {
 
 	/**
 	 *
-	 * @param \User $user
+	 * @param string $username
 	 * @param string $groupBaseDN
 	 * @return GroupList
 	 */
-	public function getUserGroups( $user, $groupBaseDN = '' ) {
+	public function getUserGroups( $username, $groupBaseDN = '' ) {
 		$cacheKey = $username.$groupBaseDN;
 		if ( isset( $this->userInfos[$cacheKey] ) ) {
 			$this->userInfos[$cacheKey];
