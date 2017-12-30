@@ -22,7 +22,7 @@ class DomainConfigFactory {
 	 * @param string $path
 	 */
 	public function __construct( $path ) {
-		if( !is_readable( $path ) ) {
+		if ( !is_readable( $path ) ) {
 			throw new \MWException( "Could not access configuration file '$path'!" );
 		}
 		$this->config = \FormatJson::decode(
@@ -30,7 +30,7 @@ class DomainConfigFactory {
 			true
 		);
 
-		if( $this->config === false ) {
+		if ( $this->config === false ) {
 			throw new \MWException( "Could not parse configuration file '$path'!" );
 		}
 	}
@@ -43,25 +43,24 @@ class DomainConfigFactory {
 	 * @return \Config
 	 */
 	public function factory( $domain, $section ) {
-
-		if( !isset( $this->config[$domain] ) ) {
+		if ( !isset( $this->config[$domain] ) ) {
 			throw new \MWException( "No configuration available for domain '$domain'!" );
 		}
-		if( !isset( $this->config[$domain][$section] ) ) {
+		if ( !isset( $this->config[$domain][$section] ) ) {
 			throw new \MWException( "No section '$section' found in configuration for domain '$domain'!" );
 		}
 
 		$extRegistry = \ExtensionRegistry::getInstance();
 		$defaultConfig = $extRegistry->getAttribute( static::DEFAULT_CONF_ATTR );
 		$defaultSectionConf = [];
-		if( isset( $defaultConfig[$section] ) ) {
+		if ( isset( $defaultConfig[$section] ) ) {
 			$defaultSectionConf = $defaultConfig[$section];
 		}
 
-		return new \MultiConfig([
+		return new \MultiConfig( [
 			new \HashConfig( $this->config[$domain][$section] ),
 			new \HashConfig( $defaultSectionConf )
-		]);
+		] );
 	}
 
 	/**
@@ -77,7 +76,7 @@ class DomainConfigFactory {
 	 * @return DomainConfigFactory
 	 */
 	public static function getInstance() {
-		if( self::$instance === null ) {
+		if ( self::$instance === null ) {
 			$extensionConfig = \MediaWiki\MediaWikiServices::getInstance()
 				->getConfigFactory()->makeConfig( 'ldapprovider' );
 			self::$instance = new self(

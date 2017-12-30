@@ -2,8 +2,6 @@
 
 namespace MediaWiki\Extension\LDAPProvider;
 
-use MediaWiki\Extension\LDAPProvider\ClientConfig;
-
 class UserInfoRequest {
 
 	/**

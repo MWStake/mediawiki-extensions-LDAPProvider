@@ -13,7 +13,7 @@ class LoadExtensionSchemaUpdates {
 	/**
 	 *
 	 * @param \DatabaseUpdater $updater
-	 * @return boolean
+	 * @return bool
 	 */
 	public static function callback( $updater ) {
 		$className = static::class;

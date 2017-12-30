@@ -50,10 +50,10 @@ class Serverlist {
 
 	protected function getPort() {
 		$port = '389';
-		if( $this->isSSL() ) {
+		if ( $this->isSSL() ) {
 			$port = '636';
 		}
-		if( $this->config->has( ClientConfig::PORT ) ) {
+		if ( $this->config->has( ClientConfig::PORT ) ) {
 			$port = $this->config->get( ClientConfig::PORT );
 		}
 		return $port;
@@ -65,7 +65,7 @@ class Serverlist {
 	}
 
 	protected function getEncType() {
-		if( $this->config->has( ClientConfig::ENC_TYPE ) ) {
+		if ( $this->config->has( ClientConfig::ENC_TYPE ) ) {
 			return $this->config->get( ClientConfig::ENC_TYPE );
 		}
 		return '';

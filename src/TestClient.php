@@ -22,7 +22,7 @@ class TestClient extends Client {
 		return call_user_func( $this->callbacks['canBindAs'], $username, $password );
 	}
 
-	public function search( $match, $basedn = null, $attrs = array() ) {
+	public function search( $match, $basedn = null, $attrs = [] ) {
 		return call_user_func( $this->callbacks['search'], $match, $basedn, $attrs );
 	}
 

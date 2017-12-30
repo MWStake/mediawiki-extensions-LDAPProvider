@@ -31,7 +31,7 @@ class ClientFactory {
 	 * @return ClientFactory
 	 */
 	public static function getInstance() {
-		if( self::$instance === null ) {
+		if ( self::$instance === null ) {
 			self::$instance = new self( $GLOBALS );
 		}
 		return self::$instance;
@@ -43,20 +43,19 @@ class ClientFactory {
 	 * @return Client
 	 */
 	public function getForDomain( $domain ) {
-		if( !isset( $this->clients[$domain] ) ) {
-			if( !isset( $this->domainClientFactories[$domain] ) ) {
+		if ( !isset( $this->clients[$domain] ) ) {
+			if ( !isset( $this->domainClientFactories[$domain] ) ) {
 				$clientConfig = DomainConfigFactory::getInstance()->factory(
 					$domain,
 					ClientConfig::DOMAINCONFIG_SECTION
 				);
 				$this->clients[$domain] = new Client( $clientConfig );
-			}
-			else {
+			} else {
 				$callback = $this->domainClientFactories[$domain];
 				$this->clients[$domain] = $callback();
 			}
 
-			if( $this->clients[$domain] instanceof Client === false ) {
+			if ( $this->clients[$domain] instanceof Client === false ) {
 				throw new \MWException( "Client factory for domain '$domain' did not return a valid Client object" );
 			}
 		}

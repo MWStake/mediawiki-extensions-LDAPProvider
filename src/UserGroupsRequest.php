@@ -2,8 +2,6 @@
 
 namespace MediaWiki\Extension\LDAPProvider;
 
-use MediaWiki\Extension\LDAPProvider\ClientConfig;
-
 class UserGroupsRequest {
 
 	/**
@@ -40,6 +38,6 @@ class UserGroupsRequest {
 	 * @return GroupList
 	 */
 	public function getUserGroups( $username ) {
-		//TODO: Implement
+		// TODO: Implement
 	}
 }

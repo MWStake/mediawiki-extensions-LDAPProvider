@@ -60,7 +60,7 @@ abstract class UserLoggedIn {
 	/**
 	 *
 	 * @param \User $user
-	 * @return boolean
+	 * @return bool
 	 */
 	public static function callback( $user ) {
 		$handler = new static(
@@ -73,10 +73,10 @@ abstract class UserLoggedIn {
 
 	/**
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function process() {
-		if( !$this->findDomainForUser() ) {
+		if ( !$this->findDomainForUser() ) {
 			return true;
 		};
 		$this->createLdapClientForDomain();
@@ -88,7 +88,7 @@ abstract class UserLoggedIn {
 	/**
 	 * @return boolean
 	 */
-	protected abstract function doProcess();
+	abstract protected function doProcess();
 
 	/**
 	 * Can be overriden by subclass
@@ -108,7 +108,7 @@ abstract class UserLoggedIn {
 
 	/**
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function findDomainForUser() {
 		$userDomainStore = new UserDomainStore(
@@ -116,7 +116,7 @@ abstract class UserLoggedIn {
 		);
 
 		$this->domain = $userDomainStore->getDomainForUser( $this->user );
-		if( $this->domain === null ) {
+		if ( $this->domain === null ) {
 			return false;
 		}
 		return true;
@@ -138,5 +138,5 @@ abstract class UserLoggedIn {
 	/**
 	 * @return string
 	 */
-	protected abstract function getDomainConfigSection();
+	abstract protected function getDomainConfigSection();
 }
