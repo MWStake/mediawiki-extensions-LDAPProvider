@@ -1,6 +1,23 @@
 {
-	"server": "ldap.forumsys.com",
-	"user": "cn=read-only-admin,dc=example,dc=com",
-	"pass": "password",
-	"basedn": "dc=example,dc=com"
+	"LDAP": {
+		"connection": {
+			"server": "ldap.forumsys.com",
+			"user": "cn=read-only-admin,dc=example,dc=com",
+			"password": "password",
+			"options": {
+				"LDAP_OPT_DEREF": 1
+			},
+			"basedn": "dc=example,dc=com",
+			"groupbasedn": "dc=example,dc=com",
+			"userbasedn": "dc=example,dc=com"
+		},
+		"userinfo": {
+			"attributes-map": {
+				"email": "mail",
+				"realname": "cn",
+				"nickname": "uid",
+				"language": "preferredlanguage"
+			}
+		}
+	}
 }
