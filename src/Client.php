@@ -74,23 +74,21 @@ class Client {
 	 * Set standard configuration options
 	 */
 	protected function setConnectionOptions() {
-		$this->functionWrapper->ldap_set_option(
-			$this->connection, LDAP_OPT_PROTOCOL_VERSION, 3
-		);
-		$this->functionWrapper->ldap_set_option(
-			$this->connection, LDAP_OPT_REFERRALS, 0
-		);
+		$options = [
+			"LDAP_OPT_PROTOCOL_VERSION" => 3,
+			"LDAP_OPT_REFERRALS" => 0
+		];
 
 		if ( $this->config->has( ClientConfig::OPTIONS ) ) {
-			$options = $this->config->get( ClientConfig::OPTIONS );
-			foreach ( $options  as $key => $value ) {
-				$ret = $this->functionWrapper->ldap_set_option(
-					$this->connection, constant( $key ), $value
-				);
-				if ( $ret === false ) {
-					$message = 'Cannot set option to LDAP connection!';
-					$this->logger->debug( $message, [ $key, $value ] );
-				}
+			$options = array_merge( $options, $this->config->get( ClientConfig::OPTIONS ) );
+		}
+		foreach ( $options  as $key => $value ) {
+			$ret = $this->functionWrapper->ldap_set_option(
+				$this->connection, constant( $key ), $value
+			);
+			if ( $ret === false ) {
+				$message = 'Cannot set option to LDAP connection!';
+				$this->logger->debug( $message, [ $key, $value ] );
 			}
 		}
 	}
