@@ -34,6 +34,7 @@ class UserGroupsRequest {
 	/**
 	 * @param string $username to get the groups for
 	 * @return GroupList
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public function getUserGroups( $username ) {
 		// TODO: Implement

@@ -1,0 +1,6 @@
+{
+	"server": "ldap.forumsys.com",
+	"user": "cn=read-only-admin,dc=example,dc=com",
+	"pass": "password",
+	"basedn": "dc=example,dc=com"
+}

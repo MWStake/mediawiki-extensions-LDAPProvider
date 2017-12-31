@@ -22,16 +22,17 @@ Note that <code>"prefer": "source"</code> causes composer to use a clone of the 
 
 === Configuration ===
 
-In the simplest case where you have a single LDAP server to query, you need to simply specify your LDAP server and the ini file.
+In the simplest case where you have a single LDAP server to query, you need to simply specify your LDAP server and the json file.
 
-Out of the box, LDAPProvider points to the [http://www.forumsys.com/ Forum Systems] [http://www.forumsys.com/tutorials/integration-how-to/ldap/online-ldap-test-server/ online ldap test server] in the included <code>ldapprovider.ini</code>.  This is a simple ini file that demonstrates the configuration:
+Out of the box, LDAPProvider points to the [http://www.forumsys.com/ Forum Systems] [http://www.forumsys.com/tutorials/integration-how-to/ldap/online-ldap-test-server/ online ldap test server] in the included <code>ldapprovider.json</code>.  This is a simple json file that demonstrates the configuration:
 
-<source lang="ini">
-[main]
-	server=ldap.forumsys.com
-	user='cn=read-only-admin,dc=example,dc=com'
-	pass=password
-	basedn='dc=example,dc=com'
+<source lang="json">
+{
+	"server": "ldap.forumsys.com",
+	"user": "cn=read-only-admin,dc=example,dc=com",
+	"pass": "password",
+	"basedn": "dc=example,dc=com"
+}
 </source>
 
 Other configurations are possible.
@@ -44,3 +45,6 @@ Tests are provided.  These can be run using the following in your MediaWiki's in
 
     $ ./tests/phpunit/phpunit.php extensions/LDAPProvider
 
+or, they can be run from within the LDAPProvider directory when it is installed:
+
+    $ composer phpunit
