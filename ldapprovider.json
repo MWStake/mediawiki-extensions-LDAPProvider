@@ -3,7 +3,7 @@
 		"connection": {
 			"server": "ldap.forumsys.com",
 			"user": "cn=read-only-admin,dc=example,dc=com",
-			"password": "password",
+			"pass": "password",
 			"options": {
 				"LDAP_OPT_DEREF": 1
 			},
