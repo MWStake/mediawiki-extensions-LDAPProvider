@@ -5,7 +5,7 @@
 	},
 	"license": "GPL-2.0+",
 	"type": "mediawiki-extension",
-	"homepage": "https:\/\/www.mediawiki.org\/wiki\/Extension:LDAPProvider",
+	"homepage": "https://www.mediawiki.org/wiki/Extension:LDAPProvider",
 	"description": "Provides a mechanism for MediaWiki to retrieve information using the LDAP protocol",
 	"keywords": [
 		"extension",

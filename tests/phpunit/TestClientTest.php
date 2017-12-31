@@ -2,22 +2,26 @@
 
 namespace MediaWiki\Extension\LDAPProvider\Tests;
 
-use \MediaWiki\Extension\LDAPProvider\TestClient;
+use MediaWiki\Extension\LDAPProvider\TestClient;
+use PHPUnit_Framework_TestCase;
 
-class TestClientTest extends \PHPUnit_Framework_TestCase {
+class TestClientTest extends PHPUnit_Framework_TestCase {
+	/**
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 */
 	public function testCallbacks() {
 		$testClient = new TestClient( [
-			'canBindAs' => function( $username, $password ) {
+			'canBindAs' => function ( $username, $password ) {
 				return strtoupper( $username );
 			},
-			'search' => function( $match, $attribs ) {
+			'search' => function ( $match, $attribs ) {
 				return strtoupper( $match );
 			}
 		] );
 
 		$this->assertEquals(
 			'USER',
-			$testClient->canBindAs( 'User', 'Somepass'),
+			$testClient->canBindAs( 'User', 'Somepass' ),
 			'Should have executed the "canBindAs" callback'
 		);
 

@@ -2,7 +2,10 @@
 
 namespace MediaWiki\Extension\LDAPProvider;
 
+use Config;
+use MWException;
 use MediaWiki\Logger\LoggerFactory;
+use User;
 
 class Client {
 
@@ -16,7 +19,7 @@ class Client {
 
 	/**
 	 *
-	 * @var \$config
+	 * @var $config
 	 */
 	protected $config = null;
 
@@ -24,7 +27,7 @@ class Client {
 	 *
 	 * @var PlatformFunctionWrapper
 	 */
-	protected $fw = null;
+	protected $functionWrapper = null;
 
 	/**
 	 *
@@ -33,19 +36,21 @@ class Client {
 	protected $logger = null;
 
 	/**
-	 *
-	 * @param \Config $config
-	 * @param PlatformFunctionWrapper $fw
+	 * @param Config $config for fetching
+	 * @param PlatformFunctionWrapper $functionWrapper optinal wrapper
 	 */
-	public function __construct( $config, $fw = null ) {
+	public function __construct( Config $config, $functionWrapper = null ) {
 		$this->config = $config;
-		$this->fw = $fw;
-		if ( $this->fw === null ) {
-			$this->fw = new PlatformFunctionWrapper();
+		$this->functionWrapper = $functionWrapper;
+		if ( $this->functionWrapper === null ) {
+			$this->functionWrapper = new PlatformFunctionWrapper();
 		}
 		$this->logger = LoggerFactory::getInstance( __CLASS__ );
 	}
 
+	/**
+	 * Handle initialization or recall saved connection
+	 */
 	protected function init() {
 		// Already initialized?
 		if ( $this->connection !== null ) {
@@ -58,26 +63,58 @@ class Client {
 		$this->establishBinding();
 	}
 
+	/**
+	 * Set up connection from a new connection
+	 */
 	protected function initConnection() {
 		$this->connection = $this->makeNewConnection();
 	}
 
+	/**
+	 * Set standard configuration options
+	 */
 	protected function setConnectionOptions() {
-		$this->fw->ldap_set_option( $this->connection, LDAP_OPT_PROTOCOL_VERSION, 3 );
-		$this->fw->ldap_set_option( $this->connection, LDAP_OPT_REFERRALS, 0 );
+		$this->functionWrapper->ldap_set_option(
+			$this->connection, LDAP_OPT_PROTOCOL_VERSION, 3
+		);
+		$this->functionWrapper->ldap_set_option(
+			$this->connection, LDAP_OPT_REFERRALS, 0
+		);
 
 		if ( $this->config->has( ClientConfig::OPTIONS ) ) {
 			$options = $this->config->get( ClientConfig::OPTIONS );
 			foreach ( $options  as $key => $value ) {
-				$ret = $this->fw->ldap_set_option( $this->connection, constant( $key ), $value );
+				$ret = $this->functionWrapper->ldap_set_option(
+					$this->connection, constant( $key ), $value
+				);
 				if ( $ret === false ) {
-					$message = 'Can\'t set option to LDAP connection!';
+					$message = 'Cannot set option to LDAP connection!';
 					$this->logger->debug( $message, [ $key, $value ] );
 				}
 			}
 		}
 	}
 
+	/**
+	 * Start encrypted connection if so configured
+	 */
+	protected function maybeStartTLS() {
+		if ( $this->config->has( ClientConfig::ENC_TYPE ) ) {
+			$encType = $this->config->get( ClientConfig::ENC_TYPE );
+			if ( $encType === EncType::TLS ) {
+				$ret = $this->functionWrapper->ldap_start_tls(
+					$this->connection
+				);
+				if ( $ret === false ) {
+					throw new MWException( 'Could not start TLS!' );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Make sure we can bind properly
+	 */
 	protected function establishBinding() {
 		$username = null;
 		if ( $this->config->has( ClientConfig::USER ) ) {
@@ -88,23 +125,13 @@ class Client {
 			$password = $this->config->get( ClientConfig::PASSWORD );
 		}
 
-		$ret = $this->fw->ldap_bind( $this->connection, $password, $username );
+		$ret = $this->functionWrapper->ldap_bind(
+			$this->connection, $password, $username
+		);
 		if ( $ret === false ) {
-			$error = $this->fw->ldap_error( $this->connection );
-			$errno = $this->fw->ldap_errno( $this->connection );
-			throw new \MWException( "Could not bind to LDAP: ($errno) $error" );
-		}
-	}
-
-	protected function maybeStartTLS() {
-		if ( $this->config->has( ClientConfig::ENC_TYPE ) ) {
-			$encType = $this->config->get( ClientConfig::ENC_TYPE );
-			if ( $encType === EncType::TLS ) {
-				$ret = $this->fw->ldap_start_tls( $this->connection );
-				if ( $ret === false ) {
-					throw new \MWException( 'Could not start TLS!' );
-				}
-			}
+			$error = $this->functionWrapper->ldap_error( $this->connection );
+			$errno = $this->functionWrapper->ldap_errno( $this->connection );
+			throw new MWException( "Could not bind to LDAP: ($errno) $error" );
 		}
 	}
 
@@ -124,7 +151,7 @@ class Client {
 		wfProfileIn( __METHOD__ );
 		$runTime = -microtime( true );
 
-		$res = $this->fw->ldap_search(
+		$res = $this->functionWrapper->ldap_search(
 			$this->connection,
 			$basedn,
 			$match,
@@ -133,16 +160,20 @@ class Client {
 
 		if ( !$res ) {
 			wfProfileOut( __METHOD__ );
-			throw new \MWException(
-				"Error in LDAP search: " . $this->fw->ldap_error( $this->connection )
+			throw new MWException(
+				"Error in LDAP search: "
+				. $this->functionWrapper->ldap_error( $this->connection )
 			);
 		}
 
-		$entry = $this->fw->ldap_get_entries( $this->connection, $res );
+		$entry = $this->functionWrapper->ldap_get_entries(
+			$this->connection, $res
+		);
 
 		$runTime += microtime( true );
 		wfProfileOut( __METHOD__ );
-		$this->logger->debug( "Ran LDAP search for '$match' in $runTime seconds.\n" );
+		$this->logger->debug( "Ran LDAP search for '$match' in "
+							  . "$runTime seconds.\n" );
 
 		return $entry;
 	}
@@ -150,9 +181,10 @@ class Client {
 	protected $userInfos = [];
 
 	/**
+	 * Get the user information
 	 *
-	 * @param string $username
-	 * @param string $userBaseDN
+	 * @param string $username for user
+	 * @param string $userBaseDN from configuration
 	 * @return array
 	 */
 	public function getUserInfo( $username, $userBaseDN = '' ) {
@@ -162,7 +194,8 @@ class Client {
 		}
 
 		$userInfoRequest = new UserInfoRequest( $this, $this->config );
-		$this->userInfos[$cacheKey] = $userInfoRequest->getUserInfo( $username );
+		$this->userInfos[$cacheKey]
+			= $userInfoRequest->getUserInfo( $username );
 
 		return $this->userInfos[$cacheKey];
 	}
@@ -170,23 +203,25 @@ class Client {
 	/**
 	 * Method to determine whether a LDAP password is valid for a specific user
 	 * on the current connection
-	 * @param string $username
-	 * @param string $password
+	 *
+	 * @param string $username for user
+	 * @param string $password for user
 	 * @return boolan
 	 */
 	public function canBindAs( $username, $password ) {
-		return $this->fw->ldap_bind( $this->makeNewConnection(), $password, $username );
+		return $this->functionWrapper->ldap_bind(
+			$this->makeNewConnection(), $password, $username
+		);
 	}
 
 	/**
-	 *
 	 * @return resource
 	 */
 	protected function makeNewConnection() {
 		\MediaWiki\suppressWarnings();
 		$servers = (string)( new Serverlist( $this->config ) );
 		$this->logger->debug( "Connecting to '$servers'" );
-		$ret = $this->fw->ldap_connect( $servers );
+		$ret = $this->functionWrapper->ldap_connect( $servers );
 		\MediaWiki\restoreWarnings();
 		return $ret;
 	}
@@ -194,9 +229,8 @@ class Client {
 	protected $userGroupLists = [];
 
 	/**
-	 *
-	 * @param string $username
-	 * @param string $groupBaseDN
+	 * @param string $username for user
+	 * @param string $groupBaseDN for group
 	 * @return GroupList
 	 */
 	public function getUserGroups( $username, $groupBaseDN = '' ) {
@@ -206,7 +240,8 @@ class Client {
 		}
 
 		$userInfoRequest = new UserGroupsRequest( $this, $this->config );
-		$this->userInfos[$cacheKey] = $userInfoRequest->getUserGroups( $username );
+		$this->userInfos[$cacheKey]
+			= $userInfoRequest->getUserGroups( $username );
 
 		return $this->userInfos[$cacheKey];
 	}

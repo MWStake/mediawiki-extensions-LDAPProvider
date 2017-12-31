@@ -12,7 +12,9 @@ class DomainConfigFactoryTest extends \MediaWikiTestCase {
 		$config = $dcf->factory( 'LDAP', ClientConfig::DOMAINCONFIG_SECTION );
 
 		$this->assertEquals( 'clear', $config->get( ClientConfig::ENC_TYPE ) );
-		$this->assertEquals( 'someDN', $config->get( ClientConfig::USER_BASE_DN ) );
+		$this->assertEquals(
+			'someDN', $config->get( ClientConfig::USER_BASE_DN )
+		);
 	}
 
 	public function testArbitrarySection() {
@@ -24,6 +26,7 @@ class DomainConfigFactoryTest extends \MediaWikiTestCase {
 
 	/**
 	 * @expectedException \ConfigException
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
 	public function testExceptionOnMissingDefault() {
 		$dcf = $this->makeDomainConfigFactory();

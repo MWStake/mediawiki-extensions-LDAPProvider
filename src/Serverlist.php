@@ -2,18 +2,20 @@
 
 namespace MediaWiki\Extension\LDAPProvider;
 
+use Config;
+
 class Serverlist {
 	/**
 	 *
-	 * @var \Config
+	 * @var Config
 	 */
 	protected $config = null;
 
 	/**
 	 *
-	 * @param \Config $config
+	 * @param Config $config to get server from
 	 */
-	public function __construct( $config ) {
+	public function __construct( Config $config ) {
 		$this->config = $config;
 	}
 
@@ -48,6 +50,10 @@ class Serverlist {
 		return $servers;
 	}
 
+	/**
+	 * Get the right port #
+	 * @return string
+	 */
 	protected function getPort() {
 		$port = '389';
 		if ( $this->isSSL() ) {
@@ -59,11 +65,19 @@ class Serverlist {
 		return $port;
 	}
 
+	/**
+	 * Determine if this is using SSL or no
+	 * @return bool
+	 */
 	protected function isSSL() {
 		return $this->config->has( ClientConfig::ENC_TYPE )
 			&& $this->config->get( ClientConfig::ENC_TYPE ) == EncType::SSL;
 	}
 
+	/**
+	 * Get the configured encoding type
+	 * @return string
+	 */
 	protected function getEncType() {
 		if ( $this->config->has( ClientConfig::ENC_TYPE ) ) {
 			return $this->config->get( ClientConfig::ENC_TYPE );

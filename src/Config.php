@@ -2,7 +2,9 @@
 
 namespace MediaWiki\Extension\LDAPProvider;
 
-class Config extends \GlobalVarConfig {
+use GlobalVarConfig;
+
+class Config extends GlobalVarConfig {
 
 	const CLIENT_REGISTRY = 'ClientRegistry';
 	const DOMAIN_CONFIGS = 'DomainConfigs';

@@ -2,35 +2,36 @@
 
 namespace MediaWiki\Extension\LDAPProvider;
 
+use Wikimedia\Rdbms\LoadBalancer;
+use User;
+
 class UserDomainStore {
 
 	/**
 	 *
-	 * @var \Wikimedia\Rdbms\LoadBalancer
+	 * @var LoadBalancer
 	 */
 	protected $loadbalancer = null;
 
 	/**
-	 *
-	 * @param \Wikimedia\Rdbms\LoadBalancer $loadbalancer
+	 * @param LoadBalancer $loadbalancer to use
 	 */
-	public function __construct( $loadbalancer ) {
+	public function __construct( LoadBalancer $loadbalancer ) {
 		$this->loadbalancer = $loadbalancer;
 	}
 
 	/**
-	 *
-	 * @param \User $user
+	 * @param User $user to get domain for
 	 * @return string|null
 	 */
-	public function getDomainForUser( $user ) {
-		$user_id = $user->getId();
-		if ( $user_id != 0 ) {
+	public function getDomainForUser( User $user ) {
+		$userId = $user->getId();
+		if ( $userId != 0 ) {
 			$dbr = $this->loadbalancer->getConnection( DB_REPLICA );
 			$row = $dbr->selectRow(
 				'ldap_domains',
 				[ 'domain' ],
-				[ 'user_id' => $user_id ],
+				[ 'user_id' => $userId ],
 				__METHOD__ );
 
 			if ( $row ) {
@@ -42,21 +43,20 @@ class UserDomainStore {
 	}
 
 	/**
-	 *
-	 * @param type $user
-	 * @param type $domain
-	 * return boolean
+	 * @param string $user to set
+	 * @param string $domain to set user to
+	 * @return bool
 	 */
 	public function setDomainForUser( $user, $domain ) {
-		$user_id = $user->getId();
-		if ( $user_id != 0 ) {
+		$userId = $user->getId();
+		if ( $userId != 0 ) {
 			$dbw = $this->loadbalancer->getConnection( DB_MASTER );
 			$olddomain = $this->getDomainForUser( $user );
 			if ( $olddomain ) {
 				return $dbw->update(
 					'ldap_domains',
 					[ 'domain' => $domain ],
-					[ 'user_id' => $user_id ],
+					[ 'user_id' => $userId ],
 					__METHOD__
 				);
 			} else {
@@ -64,7 +64,7 @@ class UserDomainStore {
 					'ldap_domains',
 					[
 						'domain' => $domain,
-						'user_id' => $user_id
+						'user_id' => $userId
 					],
 					__METHOD__
 				);

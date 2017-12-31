@@ -2,12 +2,17 @@
 
 namespace MediaWiki\Extension\LDAPProvider\Tests;
 
+use HashConfig;
 use MediaWiki\Extension\LDAPProvider\Client;
 use MediaWiki\Extension\LDAPProvider\ClientConfig;
+use MediaWiki\Extension\LDAPProvider\ClientFactory;
+use PHPUnit_Framework_TestCase;
 
-class ClientTest extends \PHPUnit_Framework_TestCase {
+class ClientTest extends PHPUnit_Framework_TestCase {
 	public function testUserCanBind() {
-		$mockBulder = $this->getMockBuilder( '\MediaWiki\Extension\LDAPProvider\PlatformFunctionWrapper' );
+		$mockBulder = $this->getMockBuilder(
+			'\MediaWiki\Extension\LDAPProvider\PlatformFunctionWrapper'
+		);
 		$mockFunctionWrapper = $mockBulder->setMethods(
 			[ 'ldap_bind', 'ldap_connect' ]
 		)->getMock();
@@ -23,12 +28,16 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 	public function testSearch() {
 		$this->maybeDefineLDAPConstants();
 
-		$mockBulder = $this->getMockBuilder( '\MediaWiki\Extension\LDAPProvider\PlatformFunctionWrapper' );
-		$mockFunctionWrapper = $mockBulder->setMethods(
-			[ 'ldap_get_entries', 'ldap_connect', 'ldap_set_option', 'ldap_bind', 'ldap_search' ]
-		)->getMock();
+		$mockBulder = $this->getMockBuilder(
+			'\MediaWiki\Extension\LDAPProvider\PlatformFunctionWrapper'
+		);
+		$mockFunctionWrapper = $mockBulder->setMethods( [
+			'ldap_get_entries', 'ldap_connect', 'ldap_set_option',
+			'ldap_bind', 'ldap_search'
+		] )->getMock();
 		$mockFunctionWrapper->expects( $this->any() )
-			->method( 'ldap_get_entries' )->willReturn( 'MockGetEntriesResponse' );
+			->method( 'ldap_get_entries' )
+			->willReturn( 'MockGetEntriesResponse' );
 		$mockFunctionWrapper->expects( $this->any() )
 			->method( 'ldap_search' )->willReturn( true );
 
@@ -39,13 +48,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function makeClientConfig() {
-		return new \HashConfig([
+		return new HashConfig( [
 			ClientConfig::SERVER => 'TestServer',
 			ClientConfig::USER => 'TestUser',
 			ClientConfig::PASSWORD => 'TestPassword',
 			ClientConfig::PORT => 'TestPort',
 			ClientConfig::BASE_DN => 'TestDN'
-		]);
+		] );
 	}
 
 	public function maybeDefineLDAPConstants() {
@@ -54,11 +63,29 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
 			'LDAP_OPT_REFERRALS'
 		];
 
-		foreach( $requiredConstants as $constName ) {
-			if( !defined( $constName ) ) {
+		foreach ( $requiredConstants as $constName ) {
+			if ( !defined( $constName ) ) {
 				define( $constName, 0 );
 			}
 		}
 	}
 
+	/**
+	 * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+	 */
+	public function testClientFactory() {
+		// @codingStandardsIgnoreStart
+		global $LDAPProviderDomainConfigs;
+		// @codingStandardsIgnoreEnd
+		$LDAPProviderDomainConfigs = __DIR__ . '/data/testconfig.json';
+
+		$factory = ClientFactory::getInstance();
+		$this->assertinstanceof(
+			'MediaWiki\Extension\LDAPProvider\ClientFactory', $factory
+		);
+		$client = $factory->getForDomain( "LDAP" );
+		$this->assertinstanceof(
+			'MediaWiki\Extension\LDAPProvider\Client', $client
+		);
+	}
 }

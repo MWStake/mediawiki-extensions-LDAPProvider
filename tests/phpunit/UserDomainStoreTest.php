@@ -3,11 +3,13 @@
 namespace MediaWiki\Extension\LDAPProvider\Tests;
 
 use MediaWiki\Extension\LDAPProvider\UserDomainStore;
+use MediaWikiTestCase;
+use MediaWiki\MediaWikiServices;
 
 /**
  * @group Database
  */
-class UserDomainStoreTest extends \MediaWikiTestCase {
+class UserDomainStoreTest extends MediaWikiTestCase {
 	protected function setUp() {
 		$this->tablesUsed[] = 'ldap_domains';
 		parent::setUp();
@@ -20,18 +22,22 @@ class UserDomainStoreTest extends \MediaWikiTestCase {
 
 	public function testGetDomainForUser() {
 		$store = new UserDomainStore(
-			\MediaWiki\MediaWikiServices::getInstance()->getDBLoadBalancer()
+			MediaWikiServices::getInstance()->getDBLoadBalancer()
 		);
 		$domain = $store->getDomainForUser( self::getTestSysop()->getUser() );
 
-		$this->assertEquals( 'SOMEDOMAIN', $domain, 'Should deliver the domain' );
+		$this->assertEquals(
+			'SOMEDOMAIN', $domain, 'Should deliver the domain'
+		);
 	}
 
 	public function testSetDomainForUser() {
 		$store = new UserDomainStore(
-			\MediaWiki\MediaWikiServices::getInstance()->getDBLoadBalancer()
+			MediaWikiServices::getInstance()->getDBLoadBalancer()
 		);
-		$store->setDomainForUser( self::getTestUser()->getUser() , 'ANOTHERDOMAIN' );
+		$store->setDomainForUser(
+			self::getTestUser()->getUser(), 'ANOTHERDOMAIN'
+		);
 		$this->assertSelect(
 			'ldap_domains',
 			[ 'domain' ],

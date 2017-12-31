@@ -16,6 +16,9 @@ class GroupList {
 	 */
 	protected $fullDNs = [];
 
+	/**
+	 * @param array $fullDNs the full DNs to handle
+	 */
 	public function __construct( $fullDNs ) {
 		$this->fullDNs = $fullDNs;
 		$this->shortNames = $this->makeShortNames();
