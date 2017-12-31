@@ -124,7 +124,7 @@ class Client {
 		}
 
 		$ret = $this->functionWrapper->ldap_bind(
-			$this->connection, $password, $username
+			$this->connection, $username, $password
 		);
 		if ( $ret === false ) {
 			$error = $this->functionWrapper->ldap_error( $this->connection );
@@ -208,7 +208,7 @@ class Client {
 	 */
 	public function canBindAs( $username, $password ) {
 		return $this->functionWrapper->ldap_bind(
-			$this->makeNewConnection(), $password, $username
+			$this->makeNewConnection(), $username, $password
 		);
 	}
 
