@@ -38,30 +38,33 @@ class CheckConnection extends Maintenance {
 		$LDAPProviderDomainConfigs = $this->getOption( "config" );
 		$factory = ClientFactory::getInstance();
 		$client = $factory->getForDomain( $this->getOption( "domain" ) );
-		var_dump( $client->search( $this->getArg( "search" ) ) );
+		$res = $client->search( $this->getArg( 0 ) );
+
+		$this->showResult( $res );
 	}
 
-	/**
-	 * Add an old global variable to the config
-	 *
-	 * @param string $varName the global variable name to get
-	 * @param string $newSettingPath where the new storage place is
-	 * @SuppressWarnings(SuperGlobals)
-	 */
-	protected function addToNewConfig( $varName, $newSettingPath ) {
-		if ( !isset( $GLOBALS[$varName] ) ) {
-			return;
-		}
-		foreach ( $GLOBALS[$varName] as $domain => $oldConfig ) {
-			$parts = explode( '.', "$domain.$newSettingPath" );
-			$config =& $this->newConfig;
-			foreach ( $parts as $part ) {
-				if ( !isset( $config[$part] ) ) {
-					$config[$part] = [];
-				}
-				$config =& $config[$part];
+	public function showResult( array $res ) {
+		$this->output( "Found ". $res['count'] ." match(es).\n" );
+
+		foreach ( $res as $index => $val ) {
+			if ( is_int( $index ) ) {
+				$this->showValue( $val );
 			}
-			$config = $oldConfig;
+		}
+	}
+
+	public function showValue( array $obj ) {
+		$this->output( "dn: " . $obj['dn'] . "\n" );
+
+		foreach ( $obj as $key => $val ) {
+			if ( is_string( $key ) && is_array( $val ) ) {
+				$this->output( "  $key:\n" );
+				foreach ( $val as $index => $value ) {
+					if ( is_int( $index ) ) {
+						$this->output( "    $value\n" );
+					}
+				}
+			}
 		}
 	}
 }

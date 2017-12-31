@@ -110,6 +110,10 @@ class PlatformFunctionWrapper {
 	 * @since 5.0
 	 */
 	public function ldap_set_option( $linkID, $option, $newval ) {
+		wfDebugLog(
+			"LDAP", "ldap_set_option( \$linkID, \$option = $option, "
+			. "\$newval = $newval );"
+		);
 		return \ldap_set_option( $linkID, $option, $newval );
 	}
 
@@ -128,6 +132,10 @@ class PlatformFunctionWrapper {
 	public function ldap_bind(
 		$linkID, $bindRDN = null, $bindPassword = null
 	) {
+		wfDebugLog(
+			"LDAP", "ldap_bind( \$linkID, \$bindRDN = '$bindRDN', "
+			. "\$bindPassword = '$bindPassword' );"
+		);
 		return \ldap_bind( $linkID, $bindRDN, $bindPassword );
 	}
 
@@ -141,6 +149,9 @@ class PlatformFunctionWrapper {
 	 * @return string string error message.
 	 */
 	public function ldap_error( $linkID ) {
+		wfDebugLog(
+			"LDAP", "ldap_error( \$linkID );"
+		);
 		return \ldap_error( $linkID );
 	}
 
@@ -156,6 +167,9 @@ class PlatformFunctionWrapper {
 	 * @since 5.0
 	 */
 	public function ldap_errno( $linkID ) {
+		wfDebugLog(
+			"LDAP", "ldap_errno( \$linkID );"
+		);
 		return \ldap_errno( $linkID );
 	}
 
@@ -163,11 +177,14 @@ class PlatformFunctionWrapper {
 	 * (PHP 4 &gt;= 4.2.0, PHP 5, PHP 7)<br/>
 	 * Start TLS
 	 * @link http://php.net/manual/en/function.ldap-start-tls.php
-	 * @param resource $link to start tls on
+	 * @param resource $linkID to start tls on
 	 * @return bool
 	 */
-	public function ldap_start_tls( $link ) {
-		return \ldap_start_tls( $link );
+	public function ldap_start_tls( $linkID ) {
+		wfDebugLog(
+			"LDAP", "ldap_start_tls( \$linkID );"
+		);
+		return \ldap_start_tls( $linkID );
 	}
 
 	/**
@@ -235,6 +252,13 @@ class PlatformFunctionWrapper {
 		$linkID, $baseDN, $filter, array $attributes = null,
 		$attrsonly = null, $sizelimit = null, $timelimit = null, $deref = null
 	) {
+		wfDebugLog(
+			"LDAP", "ldap_search( \$linkID, \$baseDN = '$baseDN', "
+			. "\$filter = '$filter', \$attributes = [ '"
+			. implode( "', '", $attributes ) . "' ], \$attrsonly = $attrsonly, "
+			. "\$sizelimit = $sizelimit, \$timelimit = $timelimit, "
+			. "\$deref = $deref );"
+		);
 		return \ldap_search(
 			$linkID, $baseDN, $filter, $attributes, $attrsonly,
 			$sizelimit, $timelimit, $deref
@@ -272,6 +296,9 @@ class PlatformFunctionWrapper {
 	 * @since 5.0
 	 */
 	public function ldap_get_entries( $linkID, $resultID ) {
+		wfDebugLog(
+			"LDAP", "ldap_get_entries( \$linkID, \$resultID );"
+		);
 		return \ldap_get_entries( $linkID, $resultID );
 	}
 
@@ -311,6 +338,9 @@ class PlatformFunctionWrapper {
 	 * opened link will be returned.
 	 */
 	public function ldap_connect( $hostname = null, $port = 389 ) {
+		wfDebugLog(
+			"LDAP", "ldap_connect( \$hostname = '$hostname', \$port = $port );"
+		);
 		return \ldap_connect( $hostname, $port );
 	}
 }
