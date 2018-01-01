@@ -1,8 +1,8 @@
 <?php
 
-namespace MediaWiki\Extension\LDAPProvider\Tests;
+namespace MediaWiki\Extensions\LDAPProvider\Tests;
 
-use MediaWiki\Extension\LDAPProvider\UserDomainStore;
+use MediaWiki\Extensions\LDAPProvider\UserDomainStore;
 use MediaWikiTestCase;
 use MediaWiki\MediaWikiServices;
 

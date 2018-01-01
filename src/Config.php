@@ -1,6 +1,6 @@
 <?php
 
-namespace MediaWiki\Extension\LDAPProvider;
+namespace MediaWiki\Extensions\LDAPProvider;
 
 use GlobalVarConfig;
 

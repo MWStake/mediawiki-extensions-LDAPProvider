@@ -1,6 +1,6 @@
 <?php
 
-namespace MediaWiki\Extension\LDAPProvider\Maintenance;
+namespace MediaWiki\Extensions\LDAPProvider\Maintenance;
 
 $maintPath = ( getenv( 'MW_INSTALL_PATH' ) !== false
 			  ? getenv( 'MW_INSTALL_PATH' )

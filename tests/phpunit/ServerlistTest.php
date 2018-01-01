@@ -1,11 +1,11 @@
 <?php
 
-namespace MediaWiki\Extension\LDAPProvider\Tests;
+namespace MediaWiki\Extensions\LDAPProvider\Tests;
 
 use HashConfig;
-use MediaWiki\Extension\LDAPProvider\ClientConfig;
-use MediaWiki\Extension\LDAPProvider\EncType;
-use MediaWiki\Extension\LDAPProvider\Serverlist;
+use MediaWiki\Extensions\LDAPProvider\ClientConfig;
+use MediaWiki\Extensions\LDAPProvider\EncType;
+use MediaWiki\Extensions\LDAPProvider\Serverlist;
 use PHPUnit_Framework_TestCase;
 
 class ServerlistTest extends PHPUnit_Framework_TestCase {

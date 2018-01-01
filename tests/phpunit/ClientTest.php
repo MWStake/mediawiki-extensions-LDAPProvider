@@ -1,17 +1,17 @@
 <?php
 
-namespace MediaWiki\Extension\LDAPProvider\Tests;
+namespace MediaWiki\Extensions\LDAPProvider\Tests;
 
 use HashConfig;
-use MediaWiki\Extension\LDAPProvider\Client;
-use MediaWiki\Extension\LDAPProvider\ClientConfig;
-use MediaWiki\Extension\LDAPProvider\ClientFactory;
+use MediaWiki\Extensions\LDAPProvider\Client;
+use MediaWiki\Extensions\LDAPProvider\ClientConfig;
+use MediaWiki\Extensions\LDAPProvider\ClientFactory;
 use PHPUnit_Framework_TestCase;
 
 class ClientTest extends PHPUnit_Framework_TestCase {
 	public function testUserCanBind() {
 		$mockBulder = $this->getMockBuilder(
-			'\MediaWiki\Extension\LDAPProvider\PlatformFunctionWrapper'
+			'\MediaWiki\Extensions\LDAPProvider\PlatformFunctionWrapper'
 		);
 		$mockFunctionWrapper = $mockBulder->setMethods(
 			[ 'ldap_bind', 'ldap_connect' ]
@@ -29,7 +29,7 @@ class ClientTest extends PHPUnit_Framework_TestCase {
 		$this->maybeDefineLDAPConstants();
 
 		$mockBulder = $this->getMockBuilder(
-			'\MediaWiki\Extension\LDAPProvider\PlatformFunctionWrapper'
+			'\MediaWiki\Extensions\LDAPProvider\PlatformFunctionWrapper'
 		);
 		$mockFunctionWrapper = $mockBulder->setMethods( [
 			'ldap_get_entries', 'ldap_connect', 'ldap_set_option',
@@ -81,11 +81,11 @@ class ClientTest extends PHPUnit_Framework_TestCase {
 
 		$factory = ClientFactory::getInstance();
 		$this->assertinstanceof(
-			'MediaWiki\Extension\LDAPProvider\ClientFactory', $factory
+			'MediaWiki\Extensions\LDAPProvider\ClientFactory', $factory
 		);
 		$client = $factory->getForDomain( "LDAP" );
 		$this->assertinstanceof(
-			'MediaWiki\Extension\LDAPProvider\Client', $client
+			'MediaWiki\Extensions\LDAPProvider\Client', $client
 		);
 	}
 }

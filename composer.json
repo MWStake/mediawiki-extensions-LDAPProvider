@@ -32,9 +32,9 @@
 	],
 	"autoload" : {
 		"psr-4": {
-			"MediaWiki\\Extension\\LDAPProvider\\Tests\\" : "tests/phpunit",
-			"MediaWiki\\Extension\\LDAPProvider\\Maintenance\\" : "maintenance",
-			"MediaWiki\\Extension\\LDAPProvider\\" : "src"
+			"MediaWiki\\Extensions\\LDAPProvider\\Tests\\" : "tests/phpunit",
+			"MediaWiki\\Extensions\\LDAPProvider\\Maintenance\\" : "maintenance",
+			"MediaWiki\\Extensions\\LDAPProvider\\" : "src"
 		}
 	},
 	"require": {
@@ -52,7 +52,7 @@
 	},
 	"scripts": {
 		"phpunit": "php $MW_INSTALL_PATH/tests/phpunit/phpunit.php -c .phpunit.xml.dist",
-		"phpdbg": "phpdbg -qrr ../../tests/phpunit/phpunit.php -c .phpunit.xml.dist",
+		"phpdbg": "phpdbg -qrr $MW_INSTALL_PATH/tests/phpunit/phpunit.php -c .phpunit.xml.dist",
 		"test": [
 			"parallel-lint . --exclude vendor --exclude node_modules",
 			"minus-x check .",

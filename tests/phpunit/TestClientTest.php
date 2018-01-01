@@ -1,8 +1,8 @@
 <?php
 
-namespace MediaWiki\Extension\LDAPProvider\Tests;
+namespace MediaWiki\Extensions\LDAPProvider\Tests;
 
-use MediaWiki\Extension\LDAPProvider\TestClient;
+use MediaWiki\Extensions\LDAPProvider\TestClient;
 use PHPUnit_Framework_TestCase;
 
 class TestClientTest extends PHPUnit_Framework_TestCase {

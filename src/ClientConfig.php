@@ -1,6 +1,6 @@
 <?php
 
-namespace MediaWiki\Extension\LDAPProvider;
+namespace MediaWiki\Extensions\LDAPProvider;
 
 class ClientConfig {
 	const DOMAINCONFIG_SECTION = 'connection';
