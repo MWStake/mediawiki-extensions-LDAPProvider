@@ -71,20 +71,43 @@ class Client {
 	}
 
 	/**
-	 * Set standard configuration options
+	 * @param bool $setOptions Set connection options after setting up connection or no.
+	 * @return resource
 	 */
-	protected function setConnectionOptions() {
+	protected function makeNewConnection( $setOptions = false ) {
+		\MediaWiki\suppressWarnings();
+		$servers = (string)( new Serverlist( $this->config ) );
+		$this->logger->debug( "Connecting to '$servers'" );
+		$ret = $this->functionWrapper->ldap_connect( $servers );
+		\MediaWiki\restoreWarnings();
+
+		if ( $setOptions && $ret ) {
+			$this->setConnectionOptions( $ret );
+		}
+		return $ret;
+	}
+
+	/**
+	 * Set standard configuration options
+	 *
+	 * @param null|resource $conn alternative to $this->connection
+	 */
+	protected function setConnectionOptions( $conn = null ) {
 		$options = [
 			"LDAP_OPT_PROTOCOL_VERSION" => 3,
 			"LDAP_OPT_REFERRALS" => 0
 		];
+
+		if ( !$conn ) {
+			$conn = $this->connection;
+		}
 
 		if ( $this->config->has( ClientConfig::OPTIONS ) ) {
 			$options = array_merge( $options, $this->config->get( ClientConfig::OPTIONS ) );
 		}
 		foreach ( $options  as $key => $value ) {
 			$ret = $this->functionWrapper->ldap_set_option(
-				$this->connection, constant( $key ), $value
+				$conn, constant( $key ), $value
 			);
 			if ( $ret === false ) {
 				$message = 'Cannot set option to LDAP connection!';
@@ -114,6 +137,7 @@ class Client {
 	 * Make sure we can bind properly
 	 */
 	protected function establishBinding() {
+		$this->init();
 		$username = null;
 		if ( $this->config->has( ClientConfig::USER ) ) {
 			$username = $this->config->get( ClientConfig::USER );
@@ -131,6 +155,7 @@ class Client {
 			$errno = $this->functionWrapper->ldap_errno( $this->connection );
 			throw new MWException( "Could not bind to LDAP: ($errno) $error" );
 		}
+		$this->isBound = true;
 	}
 
 	/**
@@ -186,6 +211,7 @@ class Client {
 	 * @return array
 	 */
 	public function getUserInfo( $username, $userBaseDN = '' ) {
+		$this->init();
 		$cacheKey = $username.$userBaseDN;
 		if ( isset( $this->userInfos[$cacheKey] ) ) {
 			$this->userInfos[$cacheKey];
@@ -207,21 +233,14 @@ class Client {
 	 * @return boolan
 	 */
 	public function canBindAs( $username, $password ) {
-		return $this->functionWrapper->ldap_bind(
-			$this->makeNewConnection(), $username, $password
-		);
-	}
-
-	/**
-	 * @return resource
-	 */
-	protected function makeNewConnection() {
-		\MediaWiki\suppressWarnings();
-		$servers = (string)( new Serverlist( $this->config ) );
-		$this->logger->debug( "Connecting to '$servers'" );
-		$ret = $this->functionWrapper->ldap_connect( $servers );
-		\MediaWiki\restoreWarnings();
-		return $ret;
+		$this->init();
+		$conn = $this->makeNewConnection( true );
+		if ( $conn ) {
+			return $this->functionWrapper->ldap_bind(
+				$conn, $username, $password
+			);
+		}
+		return false;
 	}
 
 	protected $userGroupLists = [];

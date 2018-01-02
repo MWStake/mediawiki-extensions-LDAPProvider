@@ -110,11 +110,12 @@ class PlatformFunctionWrapper {
 	 * @since 5.0
 	 */
 	public function ldap_set_option( $linkID, $option, $newval ) {
+		$ret = \ldap_set_option( $linkID, $option, $newval );
 		wfDebugLog(
 			"LDAP", "ldap_set_option( \$linkID, \$option = $option, "
-			. "\$newval = $newval );"
+			. "\$newval = $newval ); # returns $ret"
 		);
-		return \ldap_set_option( $linkID, $option, $newval );
+		return $ret;
 	}
 
 	/**
@@ -132,11 +133,12 @@ class PlatformFunctionWrapper {
 	public function ldap_bind(
 		$linkID, $bindRDN = null, $bindPassword = null
 	) {
+		$ret = \ldap_bind( $linkID, $bindRDN, $bindPassword );
 		wfDebugLog(
 			"LDAP", "ldap_bind( \$linkID, \$bindRDN = '$bindRDN', "
-			. "\$bindPassword = '$bindPassword' );"
+			. "\$bindPassword = '$bindPassword' ); # returns $ret"
 		);
-		return \ldap_bind( $linkID, $bindRDN, $bindPassword );
+		return $ret;
 	}
 
 	/**
@@ -149,10 +151,11 @@ class PlatformFunctionWrapper {
 	 * @return string string error message.
 	 */
 	public function ldap_error( $linkID ) {
+		$ret = \ldap_error( $linkID );
 		wfDebugLog(
-			"LDAP", "ldap_error( \$linkID );"
+			"LDAP", "ldap_error( \$linkID ); # returns $ret"
 		);
-		return \ldap_error( $linkID );
+		return $ret;
 	}
 
 	/**
@@ -167,10 +170,11 @@ class PlatformFunctionWrapper {
 	 * @since 5.0
 	 */
 	public function ldap_errno( $linkID ) {
+		$ret = \ldap_errno( $linkID );
 		wfDebugLog(
-			"LDAP", "ldap_errno( \$linkID );"
+			"LDAP", "ldap_errno( \$linkID ); # returns $ret"
 		);
-		return \ldap_errno( $linkID );
+		return $ret;
 	}
 
 	/**
@@ -181,10 +185,11 @@ class PlatformFunctionWrapper {
 	 * @return bool
 	 */
 	public function ldap_start_tls( $linkID ) {
+		$ret = \ldap_start_tls( $linkID );
 		wfDebugLog(
-			"LDAP", "ldap_start_tls( \$linkID );"
+			"LDAP", "ldap_start_tls( \$linkID ); # returns $ret"
 		);
-		return \ldap_start_tls( $linkID );
+		return $ret;
 	}
 
 	/**
@@ -252,17 +257,18 @@ class PlatformFunctionWrapper {
 		$linkID, $baseDN, $filter, array $attributes = null,
 		$attrsonly = null, $sizelimit = null, $timelimit = null, $deref = null
 	) {
+		$ret = \ldap_search(
+			$linkID, $baseDN, $filter, $attributes, $attrsonly,
+			$sizelimit, $timelimit, $deref
+		);
 		wfDebugLog(
 			"LDAP", "ldap_search( \$linkID, \$baseDN = '$baseDN', "
 			. "\$filter = '$filter', \$attributes = [ '"
 			. implode( "', '", $attributes ) . "' ], \$attrsonly = $attrsonly, "
 			. "\$sizelimit = $sizelimit, \$timelimit = $timelimit, "
-			. "\$deref = $deref );"
+			. "\$deref = $deref ); # returns $ret"
 		);
-		return \ldap_search(
-			$linkID, $baseDN, $filter, $attributes, $attrsonly,
-			$sizelimit, $timelimit, $deref
-		);
+		return $ret;
 	}
 
 	/**
@@ -296,10 +302,11 @@ class PlatformFunctionWrapper {
 	 * @since 5.0
 	 */
 	public function ldap_get_entries( $linkID, $resultID ) {
+		$ret = \ldap_get_entries( $linkID, $resultID );
 		wfDebugLog(
-			"LDAP", "ldap_get_entries( \$linkID, \$resultID );"
+			"LDAP", "ldap_get_entries( \$linkID, \$resultID ); # returns $ret"
 		);
-		return \ldap_get_entries( $linkID, $resultID );
+		return $ret;
 	}
 
 	/**
@@ -338,9 +345,10 @@ class PlatformFunctionWrapper {
 	 * opened link will be returned.
 	 */
 	public function ldap_connect( $hostname = null, $port = 389 ) {
+		$ret = \ldap_connect( $hostname, $port );
 		wfDebugLog(
-			"LDAP", "ldap_connect( \$hostname = '$hostname', \$port = $port );"
+			"LDAP", "ldap_connect( \$hostname = '$hostname', \$port = $port ); # returns $ret"
 		);
-		return \ldap_connect( $hostname, $port );
+		return $ret;
 	}
 }

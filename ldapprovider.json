@@ -18,6 +18,8 @@
 				"nickname": "uid",
 				"language": "preferredlanguage"
 			}
+		},
+		"authentication": {
 		}
 	}
 }

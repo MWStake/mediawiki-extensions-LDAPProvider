@@ -41,7 +41,7 @@ class DomainConfigFactory {
 			true
 		);
 
-		if ( $this->config === false ) {
+		if ( $this->config === false || count( $this->config ) === 0 ) {
 			throw new MWException(
 				"Could not parse configuration file '$path'!"
 			);
