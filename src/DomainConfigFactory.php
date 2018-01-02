@@ -31,7 +31,9 @@ class DomainConfigFactory {
 	public function __construct( $path ) {
 		if ( !is_readable( $path ) ) {
 			throw new MWException(
-				"Could not access configuration file '$path'!"
+				"Could not access configuration file '$path'!\n\n"
+				. "Please set up a domain configuration file for the "
+				. "LDAPProvider extension.\n"
 			);
 		}
 		$this->config = FormatJson::decode(

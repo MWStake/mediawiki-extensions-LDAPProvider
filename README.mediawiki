@@ -22,9 +22,11 @@ Note that <code>"prefer": "source"</code> causes composer to use a clone of the 
 
 === Configuration ===
 
-In the simplest case where you have a single LDAP server to query, you need to simply specify your LDAP server and the json file.
+In the simplest case where you have a single LDAP server to query, you need to simply specify your LDAP server and the json file. By default LDAPProvider looks for this file in /etc/mediawiki/ldapprovider.json.  If LDAProvider is installed, but cannot find it configuration file, it will fail with an error message.
 
-Out of the box, LDAPProvider points to the [http://www.forumsys.com/ Forum Systems] [http://www.forumsys.com/tutorials/integration-how-to/ldap/online-ldap-test-server/ online ldap test server] in the included <code>ldapprovider.json</code>.  This is a simple json file that demonstrates the configuration:
+LDAPProvider contains a sample configuration file that points to the [http://www.forumsys.com/ Forum Systems] [http://www.forumsys.com/tutorials/integration-how-to/ldap/online-ldap-test-server/ online ldap test server] in the included <code>ldapprovider.json</code>.  This file and the server (if it is accessible on your network) will allow you to test the extension without affecting production systems or configuring your own LDAP server.
+
+The contents of <code>ldapprovider.json</code> demonstrates a minimal configuration:
 
 <source lang="json">
 {
@@ -37,14 +39,14 @@ Out of the box, LDAPProvider points to the [http://www.forumsys.com/ Forum Syste
 
 Other configurations are possible.
 
- $LDAPProviderDomainConfigs = "/etc/mediawiki/mediawiki.ldap.json";
+If you just want to try out the sample configuration, adding the following to your LocalSettings.php should be all that is needed:
+
+<source lang="php">
+$LDAPProviderDomainConfigs = "$IP/extensions/LDAPProvider/ldapprovider.json”";
+</source>
 
 === Testing ===
 
 Tests are provided.  These can be run using the following in your MediaWiki's installation directory:
 
-    $ ./tests/phpunit/phpunit.php extensions/LDAPProvider
-
-or, they can be run from within the LDAPProvider directory when it is installed:
-
-    $ composer phpunit
+	$ ./tests/phpunit/phpunit.php extensions/LDAPProvider
