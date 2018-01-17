@@ -20,6 +20,16 @@
 	},
 	"config_prefix": "LDAPProvider",
 	"config": {
+		"CacheType": {
+			"value": "CACHE_ANYTHING",
+			"description": "The sort of cache to use for the connection information.",
+			"descriptionmsg": "ldapprovider-config-cachetype"
+		},
+		"CacheTime": {
+			"value": 500,
+			"description": "How long cached items should stick around in seconds",
+			"descriptionmsg": "ldapprovider-config-cachetime"
+		},
 		"ClientRegistry": {
 			"value": [],
 			"description": "Allows registration of custom clients",

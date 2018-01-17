@@ -8,6 +8,8 @@ class Config extends GlobalVarConfig {
 
 	const CLIENT_REGISTRY = 'ClientRegistry';
 	const DOMAIN_CONFIGS = 'DomainConfigs';
+	const CACHE_TYPE = 'CacheType';
+	const CACHE_TIME = 'CacheType';
 
 	public function __construct() {
 		parent::__construct( 'LDAPProvider' );

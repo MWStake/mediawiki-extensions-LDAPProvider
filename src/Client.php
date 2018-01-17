@@ -3,8 +3,10 @@
 namespace MediaWiki\Extensions\LDAPProvider;
 
 use Config;
-use MWException;
+use MediaWiki\Extensions\LDAPProvider\Config as LDAPConfig;
 use MediaWiki\Logger\LoggerFactory;
+use MWException;
+use RequestContext;
 use User;
 
 class Client {
@@ -35,6 +37,9 @@ class Client {
 	 */
 	protected $logger = null;
 
+	protected $cache = null;
+	protected $cacheTime = null;
+
 	/**
 	 * @param Config $config for fetching
 	 * @param PlatformFunctionWrapper $functionWrapper optinal wrapper
@@ -61,6 +66,7 @@ class Client {
 		$this->setConnectionOptions();
 		$this->maybeStartTLS();
 		$this->establishBinding();
+		$this->setupCache();
 	}
 
 	/**
@@ -71,7 +77,8 @@ class Client {
 	}
 
 	/**
-	 * @param bool $setOptions Set connection options after setting up connection or no.
+	 * @param bool $setOptions Set connection options after setting up
+	 * connection or no.
 	 * @return resource
 	 */
 	protected function makeNewConnection( $setOptions = false ) {
@@ -103,7 +110,9 @@ class Client {
 		}
 
 		if ( $this->config->has( ClientConfig::OPTIONS ) ) {
-			$options = array_merge( $options, $this->config->get( ClientConfig::OPTIONS ) );
+			$options = array_merge(
+				$options, $this->config->get( ClientConfig::OPTIONS )
+			);
 		}
 		foreach ( $options  as $key => $value ) {
 			$ret = $this->functionWrapper->ldap_set_option(
@@ -159,6 +168,21 @@ class Client {
 	}
 
 	/**
+	 * Use whatever sort of cache we've configured
+	 */
+	protected function setupCache() {
+		if ( !$this->cache ) {
+			$conf = new LDAPConfig();
+			$cacheType = $conf->get( LDAPConfig::CACHE_TYPE );
+			if ( defined( $cacheType ) ) {
+				$cacheType = constant( $cacheType );
+			}
+			$this->cache = wfGetCache( $cacheType );
+			$this->cacheTime = $conf->get( LDAPConfig::CACHE_TIME );
+		}
+	}
+
+	/**
 	 * Perform an LDAP search
 	 * @param string $match desired in ldap search format
 	 * @param string $basedn The base DN to search in
@@ -201,8 +225,6 @@ class Client {
 		return $entry;
 	}
 
-	protected $userInfos = [];
-
 	/**
 	 * Get the user information
 	 *
@@ -212,16 +234,16 @@ class Client {
 	 */
 	public function getUserInfo( $username, $userBaseDN = '' ) {
 		$this->init();
-		$cacheKey = $username.$userBaseDN;
-		if ( isset( $this->userInfos[$cacheKey] ) ) {
-			$this->userInfos[$cacheKey];
-		}
-
-		$userInfoRequest = new UserInfoRequest( $this, $this->config );
-		$this->userInfos[$cacheKey]
-			= $userInfoRequest->getUserInfo( $username );
-
-		return $this->userInfos[$cacheKey];
+		return $this->cache->getWithSetCallback(
+			$this->cache->makeKey(
+				"ldap-provider", "user-info", $username, $userBaseDN
+			),
+			$this->cacheTime,
+			function () use ( $username ) {
+				$userInfoRequest = new UserInfoRequest( $this, $this->config );
+				return $userInfoRequest->getUserInfo( $username );
+			}
+		);
 	}
 
 	/**
@@ -243,24 +265,23 @@ class Client {
 		return false;
 	}
 
-	protected $userGroupLists = [];
-
 	/**
 	 * @param string $username for user
 	 * @param string $groupBaseDN for group
 	 * @return GroupList
 	 */
 	public function getUserGroups( $username, $groupBaseDN = '' ) {
-		$cacheKey = $username.$groupBaseDN;
-		if ( isset( $this->userInfos[$cacheKey] ) ) {
-			$this->userInfos[$cacheKey];
-		}
-
-		$userInfoRequest = new UserGroupsRequest( $this, $this->config );
-		$this->userInfos[$cacheKey]
-			= $userInfoRequest->getUserGroups( $username );
-
-		return $this->userInfos[$cacheKey];
+		$this->init();
+		return $this->cache->getWithSetCallback(
+			$this->cache->makeKey(
+				"ldap-provider", "user-info", $username, $groupBaseDN
+			),
+			$this->cacheTime,
+			function () use ( $username ) {
+				$userGroupsRequest = new UserGroupsRequest( $this, $this->config );
+				return $userGroupsRequest->getUserGroups( $username );
+			}
+		);
 	}
 
 	/**
