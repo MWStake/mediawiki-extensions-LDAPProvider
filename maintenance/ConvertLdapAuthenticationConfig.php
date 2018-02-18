@@ -38,6 +38,7 @@ class ConvertLdapAuthenticationConfig extends Maintenance {
 		'wgLDAPGroupBaseDNs' => 'connection.groupbasedn',
 		'wgLDAPUserBaseDNs' => 'connection.userbasedn',
 		'wgLDAPSearchAttributes' => 'connection.userdnsearchattribute',
+		'wgLDAPSearchString' => 'connection.searchstring',
 		// 'wgLDAPGroupObjectclass' => 'basic.group.objectclass',
 		// 'wgLDAPGroupAttribute' => 'basic.group.attribute',
 		// 'wgLDAPGroupsUseMemberOf' => 'basic.group.use-member-of',

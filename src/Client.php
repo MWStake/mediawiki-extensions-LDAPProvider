@@ -247,6 +247,64 @@ class Client {
 	}
 
 	/**
+	 * Gets the searchstring for a user based upon settings for the domain.
+	 * Returns a full DN for a user.
+	 *
+	 * @param string $username
+	 * @return string
+	 */
+	private function getSearchString( $username ) {
+		$conf = new LDAPConfig();
+		$searchString = $conf->get( LDAPConfig::SEARCH_STRING );
+		if ( $searchString ) {
+			// This is a straight bind
+			$userdn = str_replace( "USER-NAME", $username, $searchString );
+		} else {
+			$userdn = $this->getUserDN( $username, true );
+		}
+		$this->printDebug( "userdn is: $userdn", SENSITIVE );
+		return $userdn;
+	}
+
+	/**
+	 * Gets the DN of a user based upon settings for the domain.
+	 * This function will set $this->LDAPUsername
+	 *
+	 * @param string $username
+	 * @param bool $bind
+	 * @param string $searchattr
+	 * @return string
+	 */
+	public function getUserDN( $username, $searchattr = '' ) {
+		$conf = new LDAPConfig();
+		if ( ! $searchattr ) {
+			$searchattr = $conf->get( LDAPConfig::USER_DN_SEARCH_ATTR );
+		}
+		// we need to do a subbase search for the entry
+		$filter = "(" . $searchattr . "=" . $this->getLdapEscapedString( $username ) . ")";
+
+		// We explicitly put memberof here because it's an operational attribute in some servers.
+		$attributes = [ "*", "memberof" ];
+		$base = $this->getBaseDN( USERDN );
+		$entry = self::ldap_search(
+			$this->ldapconn, $base, $filter, $attributes
+		);
+		if ( self::ldap_count_entries( $this->ldapconn, $entry ) == 0 ) {
+			$this->fetchedUserInfo = false;
+			$this->userInfo = null;
+			return '';
+		}
+		$this->userInfo = self::ldap_get_entries( $this->ldapconn, $entry );
+		$this->fetchedUserInfo = true;
+		if ( isset( $this->userInfo[0][$searchattr] ) ) {
+			$username = $this->userInfo[0][$searchattr][0];
+			$this->LDAPUsername = $username;
+		}
+		$userdn = $this->userInfo[0]["dn"];
+		return $userdn;
+	}
+
+	/**
 	 * Method to determine whether a LDAP password is valid for a specific user
 	 * on the current connection
 	 *
@@ -258,6 +316,7 @@ class Client {
 		$this->init();
 		$conn = $this->makeNewConnection( true );
 		if ( $conn ) {
+			$username = $this->getSearchString( $username );
 			return $this->functionWrapper->ldap_bind(
 				$conn, $username, $password
 			);

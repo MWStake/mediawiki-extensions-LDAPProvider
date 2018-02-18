@@ -9,7 +9,9 @@
 			},
 			"basedn": "dc=example,dc=com",
 			"groupbasedn": "dc=example,dc=com",
-			"userbasedn": "dc=example,dc=com"
+			"userbasedn": "dc=example,dc=com",
+			"searchattribute": "uid",
+			"searchstring": "uid"
 		},
 		"userinfo": {
 			"attributes-map": {

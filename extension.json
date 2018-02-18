@@ -55,7 +55,8 @@
 					"enctype": "clear",
 					"groupbasedn": "",
 					"userbasedn": "",
-					"searchattribute": ""
+					"searchattribute": "",
+					"searchstring": ""
 				}
 			}
 		}
