@@ -6,7 +6,6 @@ use Config;
 use MediaWiki\Extensions\LDAPProvider\Config as LDAPConfig;
 use MediaWiki\Logger\LoggerFactory;
 use MWException;
-use RequestContext;
 use User;
 
 class Client {
@@ -77,20 +76,15 @@ class Client {
 	}
 
 	/**
-	 * @param bool $setOptions Set connection options after setting up
-	 * connection or no.
 	 * @return resource
 	 */
-	protected function makeNewConnection( $setOptions = false ) {
+	protected function makeNewConnection() {
 		\MediaWiki\suppressWarnings();
 		$servers = (string)( new Serverlist( $this->config ) );
 		$this->logger->debug( "Connecting to '$servers'" );
 		$ret = $this->functionWrapper->ldap_connect( $servers );
 		\MediaWiki\restoreWarnings();
 
-		if ( $setOptions && $ret ) {
-			$this->setConnectionOptions( $ret );
-		}
 		return $ret;
 	}
 
@@ -270,9 +264,8 @@ class Client {
 	 * Gets the DN of a user based upon settings for the domain.
 	 * This function will set $this->LDAPUsername
 	 *
-	 * @param string $username
-	 * @param bool $bind
-	 * @param string $searchattr
+	 * @param string $username user
+	 * @param string $searchattr how to find
 	 * @return string
 	 */
 	public function getUserDN( $username, $searchattr = '' ) {
@@ -314,8 +307,9 @@ class Client {
 	 */
 	public function canBindAs( $username, $password ) {
 		$this->init();
-		$conn = $this->makeNewConnection( true );
+		$conn = $this->makeNewConnection();
 		if ( $conn ) {
+			$this->setConnectionOptions( $conn );
 			$username = $this->getSearchString( $username );
 			return $this->functionWrapper->ldap_bind(
 				$conn, $username, $password
