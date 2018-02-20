@@ -312,7 +312,7 @@ class PlatformFunctionWrapper {
 			"LDAP", "ldap_get_entries( \$linkID, \$resultID ); "
 		);
 		$ret = \ldap_get_entries( $linkID, $resultID );
-		wfDebugLog( "LDAP", "# returns $ret" );
+		wfDebugLog( "LDAP", "# returns: " . var_export( $ret, true ) );
 		return $ret;
 	}
 

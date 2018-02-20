@@ -31,9 +31,7 @@ class DomainConfigFactory {
 	public function __construct( $path ) {
 		if ( !is_readable( $path ) ) {
 			throw new MWException(
-				"Could not access configuration file '$path'!\n\n"
-				. "Please set up a domain configuration file for the "
-				. "LDAPProvider extension.\n"
+				wfMessage( 'ldapprovider-domain-config-not-found' )->params( $path )->plain()
 			);
 		}
 		$this->config = FormatJson::decode(

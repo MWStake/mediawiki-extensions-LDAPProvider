@@ -11,7 +11,10 @@
 			"groupbasedn": "dc=example,dc=com",
 			"userbasedn": "dc=example,dc=com",
 			"searchattribute": "uid",
-			"searchstring": "uid"
+			"searchstring": "uid=USER-NAME,dc=example,dc=com",
+			"usernameattribute": "uid",
+			"realnameattribute": "cn",
+			"emailattribute": "mail"
 		},
 		"userinfo": {
 			"attributes-map": {

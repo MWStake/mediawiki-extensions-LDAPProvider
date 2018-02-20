@@ -62,6 +62,36 @@ class UserInfoRequest {
 			$attributes
 		);
 
-		return $entry;
+		$count = $entry['count'];
+		if ( $count == 0 ) {
+			return [];
+		}
+
+		if ( $count > 1 ) {
+			throw new MWException(
+				wfMessage( "ldapprovider-more-than-one" )->params( $filter )->plain()
+			);
+		}
+
+		$res = [];
+		foreach( $entry[0] as $key => $value ) {
+			if ( $key === 'dn' ) {
+				$res[$key] = $value;
+			} else if ( !is_int( $key ) && $key !== "count") {
+				if ( $value['count'] === 1 ) {
+					$res[$key] = $value[0];
+				} else {
+					$res[$key] = array_filter(
+						$value,
+						function( $thisKey ) {
+							return is_int( $thisKey );
+						},
+						ARRAY_FILTER_USE_KEY
+					);
+				}
+			}
+		}
+
+		return $res;
 	}
 }

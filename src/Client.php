@@ -52,6 +52,10 @@ class Client {
 		$this->logger = LoggerFactory::getInstance( __CLASS__ );
 	}
 
+	public function getConfig( $key ) {
+		return $this->config->get( $key );
+	}
+
 	/**
 	 * Handle initialization or recall saved connection
 	 */
