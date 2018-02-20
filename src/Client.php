@@ -140,7 +140,6 @@ class Client {
 	 * Make sure we can bind properly
 	 */
 	protected function establishBinding() {
-		$this->init();
 		$username = null;
 		if ( $this->config->has( ClientConfig::USER ) ) {
 			$username = $this->config->get( ClientConfig::USER );
@@ -248,15 +247,14 @@ class Client {
 	 * @return string
 	 */
 	private function getSearchString( $username ) {
-		$conf = new LDAPConfig();
-		$searchString = $conf->get( LDAPConfig::SEARCH_STRING );
+		$searchString = $this->config->get( ClientConfig::SEARCH_STRING );
 		if ( $searchString ) {
 			// This is a straight bind
 			$userdn = str_replace( "USER-NAME", $username, $searchString );
 		} else {
 			$userdn = $this->getUserDN( $username, true );
 		}
-		$this->printDebug( "userdn is: $userdn", SENSITIVE );
+		wfDebugLog( "LDAPProvider", "userdn is: $userdn" );
 		return $userdn;
 	}
 

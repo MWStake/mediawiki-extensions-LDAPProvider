@@ -6,23 +6,27 @@ use HashConfig;
 use MediaWiki\Extensions\LDAPProvider\Client;
 use MediaWiki\Extensions\LDAPProvider\ClientConfig;
 use MediaWiki\Extensions\LDAPProvider\ClientFactory;
-use PHPUnit_Framework_TestCase;
+use MediaWikiTestCase;
 
-class ClientTest extends PHPUnit_Framework_TestCase {
+class ClientTest extends MediaWikiTestCase {
 	public function testUserCanBind() {
 		$mockBulder = $this->getMockBuilder(
 			'\MediaWiki\Extensions\LDAPProvider\PlatformFunctionWrapper'
 		);
 		$mockFunctionWrapper = $mockBulder->setMethods(
-			[ 'ldap_bind', 'ldap_connect' ]
+			[ 'ldap_bind', 'ldap_connect', 'ldap_set_option' ]
 		)->getMock();
 		$mockFunctionWrapper->expects( $this->any() )
 			->method( 'ldap_bind' )->willReturn( 'MockBindResponse' );
-
+		$mockFunctionWrapper->expects( $this->any() )
+			->method( 'ldap_connect' )->willReturn( true );
+		$mockFunctionWrapper->expects( $this->any() )
+			->method( 'ldap_set_option' )->willReturn( true );
 		$client = new Client( $this->makeClientConfig(), $mockFunctionWrapper );
 		$result = $client->canBindAs( 'SomeUserName', 'SomePassword' );
 
 		$this->assertEquals( 'MockBindResponse', $result );
+
 	}
 
 	public function testSearch() {
@@ -53,7 +57,8 @@ class ClientTest extends PHPUnit_Framework_TestCase {
 			ClientConfig::USER => 'TestUser',
 			ClientConfig::PASSWORD => 'TestPassword',
 			ClientConfig::PORT => 'TestPort',
-			ClientConfig::BASE_DN => 'TestDN'
+			ClientConfig::BASE_DN => 'TestDN',
+			ClientConfig::SEARCH_STRING => 'string'
 		] );
 	}
 
