@@ -44,8 +44,7 @@ class UserDomainStoreTest extends MediaWikiTestCase {
 			[ 'user_id' => self::getTestUser()->getUser()->getId() ],
 			[
 				[ 'ANOTHERDOMAIN' ]
-			],
-			'Should have saved domain to database'
+			]
 		);
 	}
 }
