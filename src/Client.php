@@ -192,7 +192,6 @@ class Client {
 			$basedn = $this->config->get( ClientConfig::BASE_DN );
 		}
 
-		wfProfileIn( __METHOD__ );
 		$runTime = -microtime( true );
 
 		$res = $this->functionWrapper->ldap_search(
@@ -203,7 +202,6 @@ class Client {
 		);
 
 		if ( !$res ) {
-			wfProfileOut( __METHOD__ );
 			throw new MWException(
 				"Error in LDAP search: "
 				. $this->functionWrapper->ldap_error( $this->connection )
@@ -215,7 +213,6 @@ class Client {
 		);
 
 		$runTime += microtime( true );
-		wfProfileOut( __METHOD__ );
 		$this->logger->debug( "Ran LDAP search for '$match' in "
 							  . "$runTime seconds.\n" );
 
