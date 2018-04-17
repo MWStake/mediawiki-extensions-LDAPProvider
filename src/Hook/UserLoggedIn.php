@@ -149,6 +149,13 @@ abstract class UserLoggedIn {
 	}
 
 	/**
+	 * @param string $domain for user
+	 */
+	public function setDomain( $domain ) {
+		$this->domain = $domain;
+	}
+
+	/**
 	 * @return string
 	 */
 	abstract protected function getDomainConfigSection();

@@ -24,7 +24,11 @@
 				"language": "preferredlanguage"
 			}
 		},
-		"authentication": {
+		"groupsync": {
+			"mapping": {
+				"mathematicians": "ou=mathematicians,dc=example,dc=com",
+				"scientists": "ou=scientists,dc=example,dc=com"
+			}
 		}
 	}
 }
