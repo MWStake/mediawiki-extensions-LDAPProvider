@@ -15,6 +15,11 @@
 			"i18n"
 		]
 	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\LDAPProvider\\Tests\\" : "tests/phpunit",
+		"MediaWiki\\Extension\\LDAPProvider\\Maintenance\\" : "maintenance",
+		"MediaWiki\\Extension\\LDAPProvider\\" : "src"
+	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates": "MediaWiki\\Extension\\LDAPProvider\\Hook\\LoadExtensionSchemaUpdates::callback"
 	},
