@@ -1,9 +1,9 @@
 <?php
 
-namespace MediaWiki\Extensions\LDAPProvider;
+namespace MediaWiki\Extension\LDAPProvider;
 
 use Config;
-use MediaWiki\Extensions\LDAPProvider\Config as LDAPConfig;
+use MediaWiki\Extension\LDAPProvider\Config as LDAPConfig;
 use MediaWiki\Logger\LoggerFactory;
 use MWException;
 use User;
@@ -52,6 +52,10 @@ class Client {
 		$this->logger = LoggerFactory::getInstance( __CLASS__ );
 	}
 
+	/**
+	 * @param string $key bit to get
+	 * @return mixed
+	 */
 	public function getConfig( $key ) {
 		return $this->config->get( $key );
 	}

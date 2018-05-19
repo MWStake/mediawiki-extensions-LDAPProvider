@@ -1,6 +1,6 @@
 <?php
 
-namespace MediaWiki\Extensions\LDAPProvider;
+namespace MediaWiki\Extension\LDAPProvider;
 
 use Config;
 
@@ -74,16 +74,16 @@ class UserInfoRequest {
 		}
 
 		$res = [];
-		foreach( $entry[0] as $key => $value ) {
+		foreach ( $entry[0] as $key => $value ) {
 			if ( $key === 'dn' ) {
 				$res[$key] = $value;
-			} else if ( !is_int( $key ) && $key !== "count") {
+			} elseif ( !is_int( $key ) && $key !== "count" ) {
 				if ( $value['count'] === 1 ) {
 					$res[$key] = $value[0];
 				} else {
 					$res[$key] = array_filter(
 						$value,
-						function( $thisKey ) {
+						function ( $thisKey ) {
 							return is_int( $thisKey );
 						},
 						ARRAY_FILTER_USE_KEY

@@ -1,8 +1,8 @@
 <?php
 
-namespace MediaWiki\Extensions\LDAPProvider\Tests;
+namespace MediaWiki\Extension\LDAPProvider\Tests;
 
-use MediaWiki\Extensions\LDAPProvider\GroupList;
+use MediaWiki\Extension\LDAPProvider\GroupList;
 
 class GroupListTest extends \PHPUnit_Framework_TestCase {
 	public function testGetShortNames() {

@@ -1,13 +1,13 @@
 <?php
 
-namespace MediaWiki\Extensions\LDAPProvider\Hook;
+namespace MediaWiki\Extension\LDAPProvider\Hook;
 
 use Config;
 use GlobalVarConfig;
 use IContextSource;
-use MediaWiki\Extensions\LDAPProvider\ClientFactory;
-use MediaWiki\Extensions\LDAPProvider\DomainConfigFactory;
-use MediaWiki\Extensions\LDAPProvider\UserDomainStore;
+use MediaWiki\Extension\LDAPProvider\ClientFactory;
+use MediaWiki\Extension\LDAPProvider\DomainConfigFactory;
+use MediaWiki\Extension\LDAPProvider\UserDomainStore;
 use MediaWiki\MediaWikiServices;
 use RequestContext;
 use User;

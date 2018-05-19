@@ -1,9 +1,9 @@
 <?php
 
-namespace MediaWiki\Extensions\LDAPProvider\Tests;
+namespace MediaWiki\Extension\LDAPProvider\Tests;
 
-use MediaWiki\Extensions\LDAPProvider\DomainConfigFactory;
-use MediaWiki\Extensions\LDAPProvider\ClientConfig;
+use MediaWiki\Extension\LDAPProvider\DomainConfigFactory;
+use MediaWiki\Extension\LDAPProvider\ClientConfig;
 
 class DomainConfigFactoryTest extends \MediaWikiTestCase {
 

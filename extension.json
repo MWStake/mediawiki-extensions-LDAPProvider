@@ -16,7 +16,7 @@
 		]
 	},
 	"Hooks": {
-		"LoadExtensionSchemaUpdates": "MediaWiki\\Extensions\\LDAPProvider\\Hook\\LoadExtensionSchemaUpdates::callback"
+		"LoadExtensionSchemaUpdates": "MediaWiki\\Extension\\LDAPProvider\\Hook\\LoadExtensionSchemaUpdates::callback"
 	},
 	"config_prefix": "LDAPProvider",
 	"config": {
@@ -44,7 +44,7 @@
 		}
 	},
 	"ConfigRegistry": {
-		"ldapprovider": "MediaWiki\\Extensions\\LDAPProvider\\Config::newInstance"
+		"ldapprovider": "MediaWiki\\Extension\\LDAPProvider\\Config::newInstance"
 	},
 	"attributes": {
 		"LDAPProvider": {

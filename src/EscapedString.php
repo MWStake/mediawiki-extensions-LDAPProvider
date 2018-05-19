@@ -1,6 +1,6 @@
 <?php
 
-namespace MediaWiki\Extensions\LDAPProvider;
+namespace MediaWiki\Extension\LDAPProvider;
 
 class EscapedString {
 	protected $value = '';

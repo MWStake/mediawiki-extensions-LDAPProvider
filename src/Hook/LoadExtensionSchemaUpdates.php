@@ -1,6 +1,6 @@
 <?php
 
-namespace MediaWiki\Extensions\LDAPProvider\Hook;
+namespace MediaWiki\Extension\LDAPProvider\Hook;
 
 use DatabaseUpdater;
 
