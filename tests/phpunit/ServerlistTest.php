@@ -2,11 +2,13 @@
 
 namespace MediaWiki\Extension\LDAPProvider\Tests;
 
-use MediaWiki\Extension\LDAPProvider\Serverlist;
+use HashConfig;
 use MediaWiki\Extension\LDAPProvider\ClientConfig;
 use MediaWiki\Extension\LDAPProvider\EncType;
+use MediaWiki\Extension\LDAPProvider\Serverlist;
+use PHPUnit_Framework_TestCase;
 
-class ServerlistTest extends \PHPUnit_Framework_TestCase {
+class ServerlistTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 *
@@ -16,7 +18,7 @@ class ServerlistTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider provideConfigs
 	 */
 	public function testToString( $config, $expected ) {
-		$config = new \HashConfig( $config );
+		$config = new HashConfig( $config );
 		$serverlist = new Serverlist( $config );
 
 		$this->assertEquals( $expected, (string)$serverlist );
@@ -39,14 +41,16 @@ class ServerlistTest extends \PHPUnit_Framework_TestCase {
 			],
 			'two-servers-and-ssl' => [
 				[
-					ClientConfig::SERVER => 'ldap1.company.tld ldap2.company.tld',
+					ClientConfig::SERVER
+					=> 'ldap1.company.tld ldap2.company.tld',
 					ClientConfig::ENC_TYPE => EncType::SSL
 				],
 				'ldaps://ldap1.company.tld:636 ldaps://ldap2.company.tld:636'
 			],
 			'two-servers-and-ldapi' => [
 				[
-					ClientConfig::SERVER => 'ldap1.company.tld ldap2.company.tld',
+					ClientConfig::SERVER
+					=> 'ldap1.company.tld ldap2.company.tld',
 					ClientConfig::ENC_TYPE => EncType::LDAPI
 				],
 				'ldapi://ldap1.company.tld:389 ldapi://ldap2.company.tld:389'

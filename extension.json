@@ -15,20 +15,35 @@
 			"i18n"
 		]
 	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\LDAPProvider\\Tests\\" : "tests/phpunit",
+		"MediaWiki\\Extension\\LDAPProvider\\Maintenance\\" : "maintenance",
+		"MediaWiki\\Extension\\LDAPProvider\\" : "src"
+	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates": "MediaWiki\\Extension\\LDAPProvider\\Hook\\LoadExtensionSchemaUpdates::callback"
 	},
 	"config_prefix": "LDAPProvider",
 	"config": {
+		"CacheType": {
+			"value": "CACHE_ANYTHING",
+			"description": "The sort of cache to use for the connection information.",
+			"descriptionmsg": "ldapprovider-config-cachetype"
+		},
+		"CacheTime": {
+			"value": 500,
+			"description": "How long cached items should stick around in seconds",
+			"descriptionmsg": "ldapprovider-config-cachetime"
+		},
 		"ClientRegistry": {
 			"value": [],
 			"description": "Allows registration of custom clients",
 			"descriptionmsg": "ldapprovider-config-clientregistry"
 		},
 		"DomainConfigs": {
-			"value": "",
+			"value": "/etc/mediawiki/ldapprovider.json",
 			"public": false,
-			"path": true,
+			"path": false,
 			"description": "Stores per domain configuration",
 			"descriptionmsg": "ldapprovider-config-domainconfigs"
 		}
@@ -45,7 +60,8 @@
 					"enctype": "clear",
 					"groupbasedn": "",
 					"userbasedn": "",
-					"searchattribute": ""
+					"searchattribute": "",
+					"searchstring": ""
 				}
 			}
 		}

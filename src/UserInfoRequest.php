@@ -2,7 +2,7 @@
 
 namespace MediaWiki\Extension\LDAPProvider;
 
-use MediaWiki\Extension\LDAPProvider\ClientConfig;
+use Config;
 
 class UserInfoRequest {
 
@@ -14,7 +14,7 @@ class UserInfoRequest {
 
 	/**
 	 *
-	 * @var \Config
+	 * @var Config
 	 */
 	protected $config = null;
 
@@ -31,19 +31,20 @@ class UserInfoRequest {
 	protected $searchAttribute = '';
 
 	/**
-	 *
-	 * @param Client $ldapClient
-	 * @param \Config $config
+	 * @param Client $ldapClient to use
+	 * @param Config $config for retrieving config from
 	 */
-	public function __construct( $ldapClient, $config ) {
+	public function __construct( Client $ldapClient, Config $config ) {
 		$this->ldapClient = $ldapClient;
 		$this->config = $config;
 		$this->userBaseDN = $config->get( ClientConfig::USER_BASE_DN );
-		$this->searchAttribute = $config->get( ClientConfig::USER_DN_SEARCH_ATTR );
+		$this->searchAttribute = $config->get(
+			ClientConfig::USER_DN_SEARCH_ATTR
+		);
 	}
 
 	/**
-	 * @param string $username
+	 * @param string $username to get info for
 	 * @return array
 	 */
 	public function getUserInfo( $username ) {
@@ -61,6 +62,36 @@ class UserInfoRequest {
 			$attributes
 		);
 
-		return $entry;
+		$count = $entry['count'];
+		if ( $count == 0 ) {
+			return [];
+		}
+
+		if ( $count > 1 ) {
+			throw new MWException(
+				wfMessage( "ldapprovider-more-than-one" )->params( $filter )->plain()
+			);
+		}
+
+		$res = [];
+		foreach ( $entry[0] as $key => $value ) {
+			if ( $key === 'dn' ) {
+				$res[$key] = $value;
+			} elseif ( !is_int( $key ) && $key !== "count" ) {
+				if ( $value['count'] === 1 ) {
+					$res[$key] = $value[0];
+				} else {
+					$res[$key] = array_filter(
+						$value,
+						function ( $thisKey ) {
+							return is_int( $thisKey );
+						},
+						ARRAY_FILTER_USE_KEY
+					);
+				}
+			}
+		}
+
+		return $res;
 	}
 }

@@ -48,7 +48,7 @@
 		"connection": {
 			"server": "testLDAPserver.LDAP.example.com testLDAPserver2.LDAP.example.com",
 			"user": "cn=proxyagent,ou=profile,dc=LDAP,dc=example,dc=com",
-			"password": "S0M3L0ngP@$$w0r6ofS0meV@rie222y!",
+			"pass": "S0M3L0ngP@$$w0r6ofS0meV@rie222y!",
 			"options": {
 				"LDAP_OPT_DEREF": 1
 			},

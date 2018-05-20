@@ -11,7 +11,9 @@ class GroupListTest extends \PHPUnit_Framework_TestCase {
 			'CN=Ninja,OU=SpecialGroups,DC=company,DC=local'
 		] );
 
-		$this->assertEquals( ['wikireader', 'ninja' ], $groupList->getShortNames() );
+		$this->assertEquals(
+			[ 'wikireader', 'ninja' ], $groupList->getShortNames()
+		);
 	}
 
 	public function testGetFullDNs() {

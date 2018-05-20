@@ -10,14 +10,15 @@ class GroupList {
 	 */
 	protected $shortNames = [];
 
-
 	/**
 	 *
 	 * @var array
 	 */
 	protected $fullDNs = [];
 
-
+	/**
+	 * @param array $fullDNs the full DNs to handle
+	 */
 	public function __construct( $fullDNs ) {
 		$this->fullDNs = $fullDNs;
 		$this->shortNames = $this->makeShortNames();
@@ -45,7 +46,7 @@ class GroupList {
 	 */
 	protected function makeShortNames() {
 		$shortNames = [];
-		foreach( $this->fullDNs as $fullDN ) {
+		foreach ( $this->fullDNs as $fullDN ) {
 			$dnAttrs = explode( ',', strtolower( $fullDN ) );
 			if ( isset( $dnAttrs[0] ) ) {
 				$dnAttrs = explode( '=', $dnAttrs[0] );

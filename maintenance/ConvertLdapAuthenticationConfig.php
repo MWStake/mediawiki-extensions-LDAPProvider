@@ -12,13 +12,17 @@ if ( !file_exists( $maintPath ) ) {
 }
 require_once $maintPath;
 
-use \Maintenance;
+use FormatJson;
+use Maintenance;
+use SplFileInfo;
 
 class ConvertLdapAuthenticationConfig extends Maintenance {
 
 	public function __construct() {
 		parent::__construct();
-		$this->addOption( 'output', 'Whether or not to output additional information', true, false );
+		$this->addOption(
+			'output', 'Where to put the json file', true, true
+		);
 	}
 
 	protected $newConfig = [];
@@ -34,46 +38,53 @@ class ConvertLdapAuthenticationConfig extends Maintenance {
 		'wgLDAPGroupBaseDNs' => 'connection.groupbasedn',
 		'wgLDAPUserBaseDNs' => 'connection.userbasedn',
 		'wgLDAPSearchAttributes' => 'connection.userdnsearchattribute',
-		//'wgLDAPGroupObjectclass' => 'basic.group.objectclass',
-		//'wgLDAPGroupAttribute' => 'basic.group.attribute',
-		//'wgLDAPGroupsUseMemberOf' => 'basic.group.use-member-of',
+		'wgLDAPSearchString' => 'connection.searchstring',
+		// 'wgLDAPGroupObjectclass' => 'basic.group.objectclass',
+		// 'wgLDAPGroupAttribute' => 'basic.group.attribute',
+		// 'wgLDAPGroupsUseMemberOf' => 'basic.group.use-member-of',
 		'wgLDAPPreferences' => 'userinfo.attributes-map',
 		'wgLDAPRequiredGroups' => 'authorization.rules.groups.required',
 		'wgLDAPExcludedGroups' => 'authorization.rules.groups.excluded',
 		'wgLDAPLocallyManagedGroups' => 'groupsync.locally-managed',
-		//'wgLDAPGroupsPrevail' => 'groupsync.prevail'
+		// 'wgLDAPGroupsPrevail' => 'groupsync.prevail'
 	];
 
+	/**
+	 * Where the action happens
+	 */
 	public function execute() {
-		foreach( $this->oldConfigVarNames as $varName => $newSettingPath ) {
+		foreach ( $this->oldConfigVarNames as $varName => $newSettingPath ) {
 			$this->addToNewConfig( $varName, $newSettingPath );
 		}
-		$this->writeJSONFile();
-	}
 
-	protected function writeJSONFile() {
-		$file = new \SplFileInfo( $this->getOption( 'output' ) );
+		$file = new SplFileInfo( $this->getOption( 'output' ) );
 		$filename = $file->getPathname();
-		if( $file->isDir() ) {
+		if ( $file->isDir() ) {
 			$filename .= '/'.wfWikiID().'.ldap.json';
 		}
 
 		file_put_contents(
 			$filename,
-			\FormatJson::encode( $this->newConfig, true )
+			FormatJson::encode( $this->newConfig, true )
 		);
 	}
 
+	/**
+	 * Add an old global variable to the config
+	 *
+	 * @param string $varName the global variable name to get
+	 * @param string $newSettingPath where the new storage place is
+	 * @SuppressWarnings(SuperGlobals)
+	 */
 	protected function addToNewConfig( $varName, $newSettingPath ) {
-		if( !isset( $GLOBALS[$varName] ) ) {
+		if ( !isset( $GLOBALS[$varName] ) ) {
 			return;
 		}
-		foreach( $GLOBALS[$varName] as $domain => $oldConfig ) {
-			#$newConfig = $this->getNewConfig( "$domain.$newSettingPath" );
+		foreach ( $GLOBALS[$varName] as $domain => $oldConfig ) {
 			$parts = explode( '.', "$domain.$newSettingPath" );
 			$config =& $this->newConfig;
-			foreach( $parts as $part ) {
-				if( !isset( $config[$part] ) ) {
+			foreach ( $parts as $part ) {
+				if ( !isset( $config[$part] ) ) {
 					$config[$part] = [];
 				}
 				$config =& $config[$part];
@@ -81,20 +92,7 @@ class ConvertLdapAuthenticationConfig extends Maintenance {
 			$config = $oldConfig;
 		}
 	}
-
-	protected function getNewConfig( $newSettingPath ) {
-		$parts = explode( '.', $newSettingPath );
-		$config =& $this->newConfig;
-		foreach( $parts as $part ) {
-			if( !isset( $config[$part] ) ) {
-				$config[$part] = [];
-			}
-			$config =& $config[$part];
-		}
-		return $config;
-	}
-
 }
 
-$maintClass = 'MediaWiki\\Extension\\LDAPProvider\\Maintenance\\ConvertLdapAuthenticationConfig';
-require_once( RUN_MAINTENANCE_IF_MAIN );
+$maintClass = __NAMESPACE__ . '\\ConvertLdapAuthenticationConfig';
+require_once RUN_MAINTENANCE_IF_MAIN;

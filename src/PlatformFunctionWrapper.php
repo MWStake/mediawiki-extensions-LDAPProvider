@@ -2,12 +2,16 @@
 
 namespace MediaWiki\Extension\LDAPProvider;
 
+/**
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ */
+
 class PlatformFunctionWrapper {
 
 	/**
 	 * Set the value of the given option
 	 * @link http://php.net/manual/en/function.ldap-set-option.php
-	 * @param resource $link_identifier <p>
+	 * @param resource $linkID <p>
 	 * An LDAP link identifier, returned by <b>ldap_connect</b>.
 	 * </p>
 	 * @param int $option <p>
@@ -105,78 +109,107 @@ class PlatformFunctionWrapper {
 	 * @since 4.0.4
 	 * @since 5.0
 	 */
-	public function ldap_set_option( $link_identifier, int $option, $newval ) {
-		return \ldap_set_option( $link_identifier, $option, $newval );
+	public function ldap_set_option( $linkID, $option, $newval ) {
+		$ret = \ldap_set_option( $linkID, $option, $newval );
+		wfDebugLog(
+			"LDAP", "ldap_set_option( \$linkID, \$option = $option, "
+			. "\$newval = $newval );"
+		);
+		wfDebugLog( "LDAP", "# returns $ret" );
+		return $ret;
 	}
 
 	/**
 	 * Bind to LDAP directory
 	 * @link http://php.net/manual/en/function.ldap-bind.php
-	 * @param resource $link_identifier <p>
+	 * @param resource $linkID <p>
 	 * An LDAP link identifier, returned by <b>ldap_connect</b>.
 	 * </p>
-	 * @param string $bind_rdn [optional]
-	 * @param string $bind_password [optional]
+	 * @param string $bindRDN [optional]
+	 * @param string $bindPassword [optional]
 	 * @return bool <b>TRUE</b> on success or <b>FALSE</b> on failure.
 	 * @since 4.0
 	 * @since 5.0
 	 */
-	public function ldap_bind( $link_identifier, $bind_rdn = null, $bind_password = null ) {
-		return \ldap_bind( $link_identifier, $bind_rdn, $bind_password );
+	public function ldap_bind(
+		$linkID, $bindRDN = null, $bindPassword = null
+	) {
+		wfDebugLog(
+			"LDAP", "ldap_bind( \$linkID, \$bindRDN = '$bindRDN', "
+			. "\$bindPassword = 'XXXX' );"
+		);
+		$ret = \ldap_bind( $linkID, $bindRDN, $bindPassword );
+		wfDebugLog( "LDAP", "# returns $ret" );
+		return $ret;
 	}
 
 	/**
 	 * (PHP 4, PHP 5, PHP 7)<br/>
 	 * Return the LDAP error message of the last LDAP command
 	 * @link http://php.net/manual/en/function.ldap-error.php
-	 * @param resource $link_identifier <p>
+	 * @param resource $linkID <p>
 	 * An LDAP link identifier, returned by <b>ldap_connect</b>.
 	 * </p>
 	 * @return string string error message.
 	 */
-	public function ldap_error( $link_identifier ) {
-		return \ldap_error( $link_identifier );
+	public function ldap_error( $linkID ) {
+		wfDebugLog(
+			"LDAP", "ldap_error( \$linkID ); "
+		);
+		$ret = \ldap_error( $linkID );
+		wfDebugLog( "LDAP", "# returns $ret" );
+		return $ret;
 	}
 
 	/**
 	 * Return the LDAP error number of the last LDAP command
 	 * @link http://php.net/manual/en/function.ldap-errno.php
-	 * @param resource $link_identifier <p>
+	 * @param resource $linkID <p>
 	 * An LDAP link identifier, returned by <b>ldap_connect</b>.
 	 * </p>
-	 * @return int Return the LDAP error number of the last LDAP command for this
-	 * link.
+	 * @return int Return the LDAP error number of the last LDAP
+	 * command for this link.
 	 * @since 4.0
 	 * @since 5.0
 	 */
-	public function ldap_errno( $link_identifier ) {
-		return \ldap_errno( $link_identifier );
+	public function ldap_errno( $linkID ) {
+		wfDebugLog(
+			"LDAP", "ldap_errno( \$linkID ); "
+		);
+		$ret = \ldap_errno( $linkID );
+		wfDebugLog( "LDAP", "# returns $ret" );
+		return $ret;
 	}
 
 	/**
 	 * (PHP 4 &gt;= 4.2.0, PHP 5, PHP 7)<br/>
 	 * Start TLS
 	 * @link http://php.net/manual/en/function.ldap-start-tls.php
-	 * @param resource $link
+	 * @param resource $linkID to start tls on
 	 * @return bool
 	 */
-	public function ldap_start_tls( $link ) {
-		return \ldap_start_tls( $link );
+	public function ldap_start_tls( $linkID ) {
+		wfDebugLog(
+			"LDAP", "ldap_start_tls( \$linkID ); "
+		);
+		$ret = \ldap_start_tls( $linkID );
+		wfDebugLog( "LDAP", "# returns $ret" );
+		return $ret;
 	}
 
 	/**
 	 * Search LDAP tree
 	 * @link http://php.net/manual/en/function.ldap-search.php
-	 * @param resource $link_identifier <p>
+	 * @param resource $linkID <p>
 	 * An LDAP link identifier, returned by <b>ldap_connect</b>.
 	 * </p>
-	 * @param string $base_dn <p>
+	 * @param string $baseDN <p>
 	 * The base DN for the directory.
 	 * </p>
 	 * @param string $filter <p>
 	 * The search filter can be simple or advanced, using boolean operators in
-	 * the format described in the LDAP documentation (see the Netscape Directory SDK for full
-	 * information on filters).
+	 * the format described in the LDAP documentation (see the
+	 * Netscape Directory SDK for full information on filters).
 	 * </p>
 	 * @param array $attributes [optional] <p>
 	 * An array of the required attributes, e.g. array("mail", "sn", "cn").
@@ -225,18 +258,34 @@ class PlatformFunctionWrapper {
 	 * @since 4.0
 	 * @since 5.0
 	 */
-	public function ldap_search( $link_identifier, $base_dn, $filter, array $attributes = null, $attrsonly = null, $sizelimit = null, $timelimit = null, $deref = null ) {
-		return \ldap_search( $link_identifier, $base_dn, $filter, $attributes, $attrsonly, $sizelimit, $timelimit, $deref );
+	public function ldap_search(
+		$linkID, $baseDN, $filter, array $attributes = null,
+		$attrsonly = null, $sizelimit = null, $timelimit = null, $deref = null
+	) {
+		wfDebugLog(
+			"LDAP", "ldap_search( \$linkID, \$baseDN = '$baseDN', "
+			. "\$filter = '$filter', \$attributes = [ '"
+			. implode( "', '", $attributes ) . "' ], \$attrsonly = $attrsonly, "
+			. "\$sizelimit = $sizelimit, \$timelimit = $timelimit, "
+			. "\$deref = $deref ); "
+		);
+		$ret = \ldap_search(
+			$linkID, $baseDN, $filter, $attributes, $attrsonly,
+			$sizelimit, $timelimit, $deref
+		);
+		wfDebugLog( "LDAP", "# returns $ret" );
+		return $ret;
 	}
 
 	/**
 	 * Get all result entries
 	 * @link http://php.net/manual/en/function.ldap-get-entries.php
-	 * @param resource $link_identifier <p>
+	 * @param resource $linkID <p>
 	 * An LDAP link identifier, returned by <b>ldap_connect</b>.
 	 * </p>
-	 * @param resource $result_identifier
-	 * @return array a complete result information in a multi-dimensional array on
+	 * @param resource $resultID result identifier?
+	 * @return array a complete result information in a
+	 * multi-dimensional array on
 	 * success and <b>FALSE</b> on error.
 	 * </p>
 	 * <p>
@@ -249,7 +298,8 @@ class PlatformFunctionWrapper {
 	 * return_value[0] : refers to the details of first entry
 	 * return_value[i]["dn"] = DN of the ith entry in the result
 	 * return_value[i]["count"] = number of attributes in ith entry
-	 * return_value[i][j] = NAME of the jth attribute in the ith entry in the result
+	 * return_value[i][j] = NAME of the jth attribute in the ith entry
+	 * in the result
 	 * return_value[i]["attribute"]["count"] = number of values for
 	 * attribute in ith entry
 	 * return_value[i]["attribute"][j] = jth value of attribute in ith entry
@@ -257,30 +307,39 @@ class PlatformFunctionWrapper {
 	 * @since 4.0
 	 * @since 5.0
 	 */
-	public function ldap_get_entries( $link_identifier, $result_identifier ) {
-		return \ldap_get_entries( $link_identifier, $result_identifier );
+	public function ldap_get_entries( $linkID, $resultID ) {
+		wfDebugLog(
+			"LDAP", "ldap_get_entries( \$linkID, \$resultID ); "
+		);
+		$ret = \ldap_get_entries( $linkID, $resultID );
+		wfDebugLog( "LDAP", "# returns: " . var_export( $ret, true ) );
+		return $ret;
 	}
 
 	/**
 	 * (PHP 4, PHP 5, PHP 7)<br/>
 	 * Connect to an LDAP server
 	 * @link http://php.net/manual/en/function.ldap-connect.php
-	 * @param string $host [optional] <p>
+	 * @param string $hostname [optional] <p>
 	 * This field supports using a hostname or, with OpenLDAP 2.x.x and
 	 * later, a full LDAP URI of the form ldap://hostname:port
 	 * or ldaps://hostname:port for SSL encryption.
 	 * </p>
 	 * <p>
-	 * You can also provide multiple LDAP-URIs separated by a space as one string
+	 * You can also provide multiple LDAP-URIs separated by a space as
+	 * one string
 	 * </p>
 	 * <p>
-	 * Note that hostname:port is not a supported LDAP URI as the schema is missing.
+	 * Note that hostname:port is not a supported LDAP URI as the
+	 * schema is missing.
 	 * </p>
 	 * @param int $port [optional] <p>
 	 * The port to connect to. Not used when using LDAP URIs.
 	 * </p>
-	 * @return resource a positive LDAP link identifier when the provided hostname/port combination or LDAP URI
-	 * seems plausible. It's a syntactic check of the provided parameters but the server(s) will not
+	 * @return resource a positive LDAP link identifier when the
+	 * provided hostname/port combination or LDAP URI seems
+	 * plausible. It's a syntactic check of the provided parameters
+	 * but the server(s) will not
 	 * be contacted! If the syntactic check fails it returns <b>FALSE</b>.
 	 * When OpenLDAP 2.x.x is used, <b>ldap_connect</b> will always
 	 * return a resource as it does not actually connect but just
@@ -293,6 +352,11 @@ class PlatformFunctionWrapper {
 	 * opened link will be returned.
 	 */
 	public function ldap_connect( $hostname = null, $port = 389 ) {
-		return \ldap_connect( $host, $port );
+		wfDebugLog(
+			"LDAP", "ldap_connect( \$hostname = '$hostname', \$port = $port ); "
+		);
+		$ret = \ldap_connect( $hostname, $port );
+		wfDebugLog( "LDAP", "# returns $ret" );
+		return $ret;
 	}
 }

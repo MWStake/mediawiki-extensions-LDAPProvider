@@ -2,34 +2,39 @@
 
 namespace MediaWiki\Extension\LDAPProvider\Hook;
 
-use MediaWiki\Extension\LDAPProvider\UserDomainStore;
-use MediaWiki\MediaWikiServices;
+use Config;
+use GlobalVarConfig;
+use IContextSource;
 use MediaWiki\Extension\LDAPProvider\ClientFactory;
 use MediaWiki\Extension\LDAPProvider\DomainConfigFactory;
+use MediaWiki\Extension\LDAPProvider\UserDomainStore;
+use MediaWiki\MediaWikiServices;
+use RequestContext;
+use User;
 
 abstract class UserLoggedIn {
 
 	/**
 	 *
-	 * @var \User
+	 * @var User
 	 */
 	protected $user = null;
 
 	/**
 	 *
-	 * @var \ContextSource
+	 * @var ContextSource
 	 */
 	protected $context = null;
 
 	/**
 	 *
-	 * @var \Config
+	 * @var Config
 	 */
 	protected $config = null;
 
 	/**
 	 *
-	 * @var \MediaWiki\Extension\LDAPProvider\Client
+	 * @var Client
 	 */
 	protected $ldapClient = null;
 
@@ -41,17 +46,19 @@ abstract class UserLoggedIn {
 
 	/**
 	 *
-	 * @var \Config
+	 * @var Config
 	 */
 	protected $domainConfig = null;
 
 	/**
 	 *
-	 * @param \IContextSource $context
-	 * @param \Config $config
-	 * @param \User $user
+	 * @param IContextSource $context we're operating in
+	 * @param Config $config accessor
+	 * @param User $user we're talking about
 	 */
-	public function __construct( $context, $config, $user ) {
+	public function __construct(
+		IContextSource $context, Config $config, User $user
+	) {
 		$this->context = $context;
 		$this->config = $config;
 		$this->user = $user;
@@ -59,10 +66,10 @@ abstract class UserLoggedIn {
 
 	/**
 	 *
-	 * @param \User $user
-	 * @return boolean
+	 * @param User $user we're going to process
+	 * @return bool
 	 */
-	public static function callback( $user ) {
+	public static function callback( User $user ) {
 		$handler = new static(
 			static::makeContext(),
 			static::makeConfig(),
@@ -73,10 +80,10 @@ abstract class UserLoggedIn {
 
 	/**
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function process() {
-		if( !$this->findDomainForUser() ) {
+		if ( !$this->findDomainForUser() ) {
 			return true;
 		};
 		$this->createLdapClientForDomain();
@@ -88,27 +95,27 @@ abstract class UserLoggedIn {
 	/**
 	 * @return boolean
 	 */
-	protected abstract function doProcess();
+	abstract protected function doProcess();
 
 	/**
 	 * Can be overriden by subclass
-	 * @return \IContextSource
+	 * @return IContextSource
 	 */
 	protected static function makeContext() {
-		return \RequestContext::getMain();
+		return RequestContext::getMain();
 	}
 
 	/**
 	 * Can be overriden by subclass
-	 * @return \Config
+	 * @return Config
 	 */
 	protected static function makeConfig() {
-		return new \GlobalVarConfig();
+		return new GlobalVarConfig();
 	}
 
 	/**
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	protected function findDomainForUser() {
 		$userDomainStore = new UserDomainStore(
@@ -116,18 +123,24 @@ abstract class UserLoggedIn {
 		);
 
 		$this->domain = $userDomainStore->getDomainForUser( $this->user );
-		if( $this->domain === null ) {
+		if ( $this->domain === null ) {
 			return false;
 		}
 		return true;
 	}
 
+	/**
+	 * Fill out our ldapClient member
+	 */
 	protected function createLdapClientForDomain() {
 		$ldapClientFactory = ClientFactory::getInstance();
 
 		$this->ldapClient = $ldapClientFactory->getForDomain( $this->domain );
 	}
 
+	/**
+	 * Set up our domainConfig member
+	 */
 	protected function setSuitableDomainConfig() {
 		$this->domainConfig = DomainConfigFactory::getInstance()->factory(
 			$this->domain,
@@ -136,7 +149,14 @@ abstract class UserLoggedIn {
 	}
 
 	/**
+	 * @param string $domain for user
+	 */
+	public function setDomain( $domain ) {
+		$this->domain = $domain;
+	}
+
+	/**
 	 * @return string
 	 */
-	protected abstract function getDomainConfigSection();
+	abstract protected function getDomainConfigSection();
 }
