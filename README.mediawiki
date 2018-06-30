@@ -42,7 +42,7 @@ Other configurations are possible.
 If you just want to try out the sample configuration, adding the following to your LocalSettings.php should be all that is needed:
 
 <source lang="php">
-$LDAPProviderDomainConfigs = "$IP/extensions/LDAPProvider/ldapprovider.json”";
+$LDAPProviderDomainConfigs = "$IP/extensions/LDAPProvider/ldapprovider.json";
 </source>
 
 === Testing ===
