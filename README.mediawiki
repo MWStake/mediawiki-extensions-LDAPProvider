@@ -30,11 +30,15 @@ The contents of <code>ldapprovider.json</code> demonstrates a minimal configurat
 
 <source lang="json">
 {
-	"server": "ldap.forumsys.com",
-	"user": "cn=read-only-admin,dc=example,dc=com",
-	"pass": "password",
-	"basedn": "dc=example,dc=com"
-}
+	"LDAP Demo": {
+		"connection": {
+				"server": "10.5.5.1",
+				"user": "cn=read-only-admin,dc=example,dc=com",
+				"pass": "password",
+				"basedn": "dc=example,dc=com",
+				"searchstring": "uid=USER-NAME,dc=example,dc=com"
+		}
+	}
 </source>
 
 Other configurations are possible.

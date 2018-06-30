@@ -14,7 +14,7 @@ class Client {
 
 	/**
 	 *
-	 * @var resource
+	 * @var PlatformFunctionWrapper
 	 */
 	protected $connection = null;
 
@@ -23,12 +23,6 @@ class Client {
 	 * @var $config
 	 */
 	protected $config = null;
-
-	/**
-	 *
-	 * @var PlatformFunctionWrapper
-	 */
-	protected $functionWrapper = null;
 
 	/**
 	 *
@@ -41,13 +35,11 @@ class Client {
 
 	/**
 	 * @param Config $config for fetching
-	 * @param PlatformFunctionWrapper $functionWrapper optinal wrapper
 	 */
-	public function __construct( Config $config, $functionWrapper = null ) {
+	public function __construct( Config $config ) {
 		$this->config = $config;
-		$this->functionWrapper = $functionWrapper;
-		if ( $this->functionWrapper === null ) {
-			$this->functionWrapper = new PlatformFunctionWrapper();
+		if ( $this->connection === null ) {
+			$this->connection = new PlatformFunctionWrapper();
 		}
 		$this->logger = LoggerFactory::getInstance( __CLASS__ );
 	}
@@ -65,11 +57,12 @@ class Client {
 	 */
 	protected function init() {
 		// Already initialized?
-		if ( $this->connection !== null ) {
+		if ( $this->connection->isConnected() ) {
 			return;
 		}
 
-		$this->initConnection();
+		$this->makeNewConnection();
+		$this->setupCache();
 		$this->setConnectionOptions();
 		$this->maybeStartTLS();
 		$this->establishBinding();
@@ -77,39 +70,25 @@ class Client {
 	}
 
 	/**
-	 * Set up connection from a new connection
-	 */
-	protected function initConnection() {
-		$this->connection = $this->makeNewConnection();
-	}
-
-	/**
 	 * @return resource
 	 */
 	protected function makeNewConnection() {
-		\MediaWiki\suppressWarnings();
 		$servers = (string)( new Serverlist( $this->config ) );
-		$this->logger->debug( "Connecting to '$servers'" );
-		$ret = $this->functionWrapper->ldap_connect( $servers );
-		\MediaWiki\restoreWarnings();
-
-		return $ret;
+		$this->connection = PlatformFunctionWrapper::getConnection( $servers );
+		if ( !$this->connection ) {
+			throw new Exception( "Couldn't connect with $servers" );
+		}
+		return $this->connection;
 	}
 
 	/**
 	 * Set standard configuration options
-	 *
-	 * @param null|resource $conn alternative to $this->connection
 	 */
-	protected function setConnectionOptions( $conn = null ) {
+	protected function setConnectionOptions() {
 		$options = [
 			"LDAP_OPT_PROTOCOL_VERSION" => 3,
 			"LDAP_OPT_REFERRALS" => 0
 		];
-
-		if ( !$conn ) {
-			$conn = $this->connection;
-		}
 
 		if ( $this->config->has( ClientConfig::OPTIONS ) ) {
 			$options = array_merge(
@@ -117,9 +96,8 @@ class Client {
 			);
 		}
 		foreach ( $options  as $key => $value ) {
-			$ret = $this->functionWrapper->ldap_set_option(
-				$conn, constant( $key ), $value
-			);
+			$this->logger->debug( "Setting $key to $value" );
+			$ret = $this->connection->setOption( constant( $key ), $value );
 			if ( $ret === false ) {
 				$message = 'Cannot set option to LDAP connection!';
 				$this->logger->debug( $message, [ $key, $value ] );
@@ -134,9 +112,7 @@ class Client {
 		if ( $this->config->has( ClientConfig::ENC_TYPE ) ) {
 			$encType = $this->config->get( ClientConfig::ENC_TYPE );
 			if ( $encType === EncType::TLS ) {
-				$ret = $this->functionWrapper->ldap_start_tls(
-					$this->connection
-				);
+				$ret = $this->connection->startTLS();
 				if ( $ret === false ) {
 					throw new MWException( 'Could not start TLS!' );
 				}
@@ -148,6 +124,7 @@ class Client {
 	 * Make sure we can bind properly
 	 */
 	protected function establishBinding() {
+		$this->init();
 		$username = null;
 		if ( $this->config->has( ClientConfig::USER ) ) {
 			$username = $this->config->get( ClientConfig::USER );
@@ -157,13 +134,13 @@ class Client {
 			$password = $this->config->get( ClientConfig::PASSWORD );
 		}
 
-		$ret = $this->functionWrapper->ldap_bind(
-			$this->connection, $username, $password
-		);
+		$ret = $this->connection->bind( $username, $password );
 		if ( $ret === false ) {
-			$error = $this->functionWrapper->ldap_error( $this->connection );
-			$errno = $this->functionWrapper->ldap_errno( $this->connection );
-			throw new MWException( "Could not bind to LDAP: ($errno) $error" );
+			$error = $this->connection->error();
+			$errno = $this->connection->errno();
+			throw new MWException(
+				"Could not bind to LDAP: ($errno) $error"
+			);
 		}
 		$this->isBound = true;
 	}
@@ -198,23 +175,14 @@ class Client {
 
 		$runTime = -microtime( true );
 
-		$res = $this->functionWrapper->ldap_search(
-			$this->connection,
-			$basedn,
-			$match,
-			$attrs
-		);
+		$res = $this->connection->search( $basedn, $match, $attrs );
 
 		if ( !$res ) {
 			throw new MWException(
-				"Error in LDAP search: "
-				. $this->functionWrapper->ldap_error( $this->connection )
-			);
+				"Error in LDAP search: " . $this->connection->error() );
 		}
 
-		$entry = $this->functionWrapper->ldap_get_entries(
-			$this->connection, $res
-		);
+		$entry = $this->connection->getEntries( $res );
 
 		$runTime += microtime( true );
 		$this->logger->debug( "Ran LDAP search for '$match' in "
@@ -238,7 +206,9 @@ class Client {
 			),
 			$this->cacheTime,
 			function () use ( $username ) {
-				$userInfoRequest = new UserInfoRequest( $this, $this->config );
+				$userInfoRequest = new UserInfoRequest(
+					$this, $this->config
+				);
 				return $userInfoRequest->getUserInfo( $username );
 			}
 		);
@@ -257,7 +227,7 @@ class Client {
 			// This is a straight bind
 			$userdn = str_replace( "USER-NAME", $username, $searchString );
 		} else {
-			$userdn = $this->getUserDN( $username, true );
+			$userdn = $this->getUserDN( $username );
 		}
 		wfDebugLog( "LDAPProvider", "userdn is: $userdn" );
 		return $userdn;
@@ -272,25 +242,26 @@ class Client {
 	 * @return string
 	 */
 	public function getUserDN( $username, $searchattr = '' ) {
-		$conf = new LDAPConfig();
+		$this->init();
 		if ( ! $searchattr ) {
-			$searchattr = $conf->get( LDAPConfig::USER_DN_SEARCH_ATTR );
+			$searchattr = $this->config->get(
+				ClientConfig::USER_DN_SEARCH_ATTR
+			);
 		}
 		// we need to do a subbase search for the entry
-		$filter = "(" . $searchattr . "=" . $this->getLdapEscapedString( $username ) . ")";
+		$filter = "(" . $searchattr . "=" . $this->connection->escape( $username ) . ")";
 
-		// We explicitly put memberof here because it's an operational attribute in some servers.
+		// We explicitly put memberof here because it's an operational
+		// attribute in some servers.
 		$attributes = [ "*", "memberof" ];
-		$base = $this->getBaseDN( USERDN );
-		$entry = self::ldap_search(
-			$this->ldapconn, $base, $filter, $attributes
-		);
-		if ( self::ldap_count_entries( $this->ldapconn, $entry ) == 0 ) {
+		$base = $this->config->get( ClientConfig::BASE_DN );
+		$entry = $this->connection->search( $base, $filter, $attributes );
+		if ( $this->connection->count( $entry ) == 0 ) {
 			$this->fetchedUserInfo = false;
 			$this->userInfo = null;
 			return '';
 		}
-		$this->userInfo = self::ldap_get_entries( $this->ldapconn, $entry );
+		$this->userInfo = $this->connection->getEntries( $entry );
 		$this->fetchedUserInfo = true;
 		if ( isset( $this->userInfo[0][$searchattr] ) ) {
 			$username = $this->userInfo[0][$searchattr][0];
@@ -301,24 +272,19 @@ class Client {
 	}
 
 	/**
-	 * Method to determine whether a LDAP password is valid for a specific user
-	 * on the current connection
+	 * Method to determine whether a LDAP password is valid for a
+	 * specific user on the current connection
 	 *
 	 * @param string $username for user
 	 * @param string $password for user
-	 * @return boolan
+	 * @return bool
+	 *
+	 * @fixme two binds are done here, first is as admin in init()
 	 */
 	public function canBindAs( $username, $password ) {
 		$this->init();
-		$conn = $this->makeNewConnection();
-		if ( $conn ) {
-			$this->setConnectionOptions( $conn );
-			$username = $this->getSearchString( $username );
-			return $this->functionWrapper->ldap_bind(
-				$conn, $username, $password
-			);
-		}
-		return false;
+		$username = $this->getSearchString( $username );
+		return $this->connection->bind( $username, $password);
 	}
 
 	/**
@@ -326,15 +292,17 @@ class Client {
 	 * @param string $groupBaseDN for group
 	 * @return GroupList
 	 */
-	public function getUserGroups( $username, $groupBaseDN = '' ) {
+	public function getUserGroups( $groupConfig, $username, $groupBaseDN = '' ) {
 		$this->init();
 		return $this->cache->getWithSetCallback(
 			$this->cache->makeKey(
 				"ldap-provider", "user-info", $username, $groupBaseDN
 			),
 			$this->cacheTime,
-			function () use ( $username ) {
-				$userGroupsRequest = new UserGroupsRequest( $this, $this->config );
+			function () use ( $username, $groupConfig ) {
+				$userGroupsRequest = UserGroupsRequest::groupFactory(
+					$groupConfig, $this, $this->config
+				);
 				return $userGroupsRequest->getUserGroups( $username );
 			}
 		);

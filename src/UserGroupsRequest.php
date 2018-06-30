@@ -3,8 +3,10 @@
 namespace MediaWiki\Extension\LDAPProvider;
 
 use Config;
+use MediaWiki\Extension\LDAPGroups\Config as GroupConfig;
+use MWException;
 
-class UserGroupsRequest {
+abstract class UserGroupsRequest {
 
 	/**
 	 * @var Client
@@ -31,12 +33,19 @@ class UserGroupsRequest {
 		$this->groupBaseDN = $config->get( ClientConfig::GROUP_BASE_DN );
 	}
 
+	public static function groupFactory( $groupConfig, $ldapClient, Config $config ) {
+		$type = $groupConfig->get( GroupConfig::GROUP_TYPE );
+		$class = 'MediaWiki\Extension\LDAPProvider\UserGroupsRequest' . "\\" . $type;
+		if ( class_exists( $class ) ) {
+			return new $class( $ldapClient, $config );
+		}
+
+		throw new MWException( "Class for $type does not exist!" );
+	}
+
 	/**
 	 * @param string $username to get the groups for
 	 * @return GroupList
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
-	public function getUserGroups( $username ) {
-		// TODO: Implement
-	}
+	abstract function getUserGroups( $username );
 }
