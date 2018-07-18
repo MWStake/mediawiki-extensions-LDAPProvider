@@ -22,7 +22,7 @@ class UserDomainStoreTest extends MediaWikiTestCase {
 
 	public function testGetDomainForUser() {
 		$store = new UserDomainStore(
-			MediaWikiServices::getInstance()->getDBLoadBalancer()
+			wfGetLB()
 		);
 		$domain = $store->getDomainForUser( self::getTestSysop()->getUser() );
 
@@ -33,7 +33,7 @@ class UserDomainStoreTest extends MediaWikiTestCase {
 
 	public function testSetDomainForUser() {
 		$store = new UserDomainStore(
-			MediaWikiServices::getInstance()->getDBLoadBalancer()
+			wfGetLB()
 		);
 		$store->setDomainForUser(
 			self::getTestUser()->getUser(), 'ANOTHERDOMAIN'
