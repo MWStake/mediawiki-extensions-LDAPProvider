@@ -292,17 +292,15 @@ class Client {
 	 * @param string $groupBaseDN for group
 	 * @return GroupList
 	 */
-	public function getUserGroups( $groupConfig, $username, $groupBaseDN = '' ) {
+	public function getUserGroups( $username, $groupBaseDN = '' ) {
 		$this->init();
 		return $this->cache->getWithSetCallback(
 			$this->cache->makeKey(
 				"ldap-provider", "user-info", $username, $groupBaseDN
 			),
 			$this->cacheTime,
-			function () use ( $username, $groupConfig ) {
-				$userGroupsRequest = UserGroupsRequest::groupFactory(
-					$groupConfig, $this, $this->config
-				);
+			function () use ( $username ) {
+				$userGroupsRequest = UserGroupsRequest::groupFactory( $this, $this->config );
 				return $userGroupsRequest->getUserGroups( $username );
 			}
 		);

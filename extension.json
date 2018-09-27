@@ -61,7 +61,8 @@
 					"groupbasedn": "",
 					"userbasedn": "",
 					"searchattribute": "",
-					"searchstring": ""
+					"searchstring": "",
+					"grouprequest":"MediaWiki\\Extension\\LDAPProvider\\UserGroupRequest\\GroupUniqueMember::factory"
 				}
 			}
 		}

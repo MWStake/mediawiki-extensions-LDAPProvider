@@ -6,7 +6,7 @@ use MediaWiki\Extension\LDAPProvider\UserGroupsRequest;
 use MediaWiki\Extension\LDAPProvider\ClientConfig;
 use MediaWiki\Extension\LDAPProvider\GroupList;
 
-class UniqueMember extends UserGroupsRequest {
+class GroupMember extends UserGroupsRequest {
 
 	/**
 	 * @param string $username to get the groups for
@@ -21,7 +21,7 @@ class UniqueMember extends UserGroupsRequest {
 			$baseDN = null;
 		}
 		$groups = $this->ldapClient->search(
-			"(&(objectclass=groupOfUniqueNames)(uniqueMember=$userDN))",
+			"(&(objectclass=group)(member=$userDN))",
 			$baseDN, [ $dn ]
 		);
 		$ret = [];
@@ -32,4 +32,5 @@ class UniqueMember extends UserGroupsRequest {
 		}
 		return new GroupList( $ret );
 	}
+
 }
