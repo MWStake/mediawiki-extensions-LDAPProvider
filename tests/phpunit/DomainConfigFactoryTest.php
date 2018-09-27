@@ -4,6 +4,7 @@ namespace MediaWiki\Extension\LDAPProvider\Tests;
 
 use MediaWiki\Extension\LDAPProvider\DomainConfigFactory;
 use MediaWiki\Extension\LDAPProvider\ClientConfig;
+use MediaWiki\Extension\LDAPProvider\DomainConfigProvider\LocalJSONFile;
 
 class DomainConfigFactoryTest extends \MediaWikiTestCase {
 
@@ -39,7 +40,9 @@ class DomainConfigFactoryTest extends \MediaWikiTestCase {
 	 * @return DomainConfigFactory
 	 */
 	protected function makeDomainConfigFactory() {
-		return new DomainConfigFactory( __DIR__ . '/data/testconfig.json' );
+		return new DomainConfigFactory(
+			new LocalJSONFile( __DIR__ . '/data/testconfig.json' )
+		);
 	}
 
 }
