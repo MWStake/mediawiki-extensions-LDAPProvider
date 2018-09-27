@@ -296,12 +296,18 @@ class Client {
 		$this->init();
 		return $this->cache->getWithSetCallback(
 			$this->cache->makeKey(
-				"ldap-provider", "user-info", $username, $groupBaseDN
+				"ldap-provider", "user-info", $username, $groupBaseDN, time()
 			),
 			$this->cacheTime,
 			function () use ( $username ) {
-				$userGroupsRequest = UserGroupsRequest::groupFactory( $this, $this->config );
-				return $userGroupsRequest->getUserGroups( $username );
+				$factoryCallback = $this->config->get( 'grouprequest' );
+				$request = $factoryCallback( $this, $this->config );
+
+				if ( $request instanceof UserGroupsRequest === false ) {
+					throw new MWException( "Configured GroupRequest not valid" );
+				}
+
+				return $request->getUserGroups( $username );
 			}
 		);
 	}

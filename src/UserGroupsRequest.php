@@ -40,13 +40,8 @@ abstract class UserGroupsRequest {
 	 * @return UserGroupsRequest
 	 * @throws MWException
 	 */
-	public static function groupFactory( $ldapClient, Config $config ) {
-		$factoryCallback = $config->get( 'grouprequest' );
-		$request = $factoryCallback( $ldapClient, $config );
-
-		if ( $request instanceof UserGroupsRequest === false ) {
-			throw new MWException( "Configured GroupRequest not valid" );
-		}
+	public static function factory( $ldapClient, Config $config ) {
+		$request = new static( $ldapClient, $config );
 		return $request;
 	}
 

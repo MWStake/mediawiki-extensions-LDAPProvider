@@ -17,12 +17,8 @@ class UserMemberOf extends UserGroupsRequest {
 	public function getUserGroups( $username ) {
 		$userInfoRequest = new UserInfoRequest( $this->ldapClient, $this->config );
 		$res = $userInfoRequest->getUserInfo( $username );
-		$ret = [];
-		foreach( $res as $row ) {
-			$ret[] = $row['memberOf'];
-		}
 
-		return new GroupList( $ret );
+		return new GroupList( $res['memberof'] );
 	}
 
 }
