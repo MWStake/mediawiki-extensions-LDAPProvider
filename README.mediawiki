@@ -49,6 +49,26 @@ If you just want to try out the sample configuration, adding the following to yo
 $LDAPProviderDomainConfigs = "$IP/extensions/LDAPProvider/ldapprovider.json";
 </source>
 
+==== Alternative configuration via PHP ====
+
+In <code>LocalSettings.php</code> add
+<syntaxhighlight lang="php">
+$LDAPProviderDomainConfigProvider = function( $ldapConfig ) {
+	return new \MediaWiki\Extension\LDAPProvider\DomainConfigProvider\InlinePHPArray( [
+		//Domain name
+		'LDAP' => [
+			'connection' => [
+					'server' => '10.5.5.1',
+					'user' => 'cn=read-only-admin,dc=example,dc=com',
+					'pass' => 'password',
+					'basedn' => 'dc=example,dc=com',
+					'searchstring' => 'uid=USER-NAME,dc=example,dc=com'
+				]
+			]
+	] );
+};
+</syntaxhighlight>
+
 === Testing ===
 
 Tests are provided.  These can be run using the following in your MediaWiki's installation directory:
