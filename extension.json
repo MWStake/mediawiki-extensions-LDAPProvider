@@ -46,6 +46,12 @@
 			"path": false,
 			"description": "Stores per domain configuration",
 			"descriptionmsg": "ldapprovider-config-domainconfigs"
+		},
+		"DomainConfigProvider": {
+			"value": "\\MediaWiki\\Extension\\LDAPProvider\\DomainConfigProvider\\LocalJSONFile::newInstance",
+			"public": false,
+			"description": "Specifies the mechanism for obtaining the domain configuration",
+			"descriptionmsg": "ldapprovider-config-domainconfigprovider"
 		}
 	},
 	"ConfigRegistry": {

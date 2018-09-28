@@ -21,11 +21,11 @@
 namespace MediaWiki\Extension\LDAPProvider;
 
 use ExtensionRegistry;
-use FormatJson;
-use Hashconfig;
+use HashConfig;
 use MWException;
 use MediaWiki\MediaWikiServices;
 use MultiConfig;
+use MediaWiki\Extension\LDAPProvider\Config;
 
 class DomainConfigFactory {
 
@@ -44,24 +44,10 @@ class DomainConfigFactory {
 	protected $config = null;
 
 	/**
-	 * @param string $path to config file
+	 * @param IDomainConfigProvider $configProvider to config file
 	 */
-	public function __construct( $path ) {
-		if ( !is_readable( $path ) ) {
-			throw new MWException(
-				wfMessage( 'ldapprovider-domain-config-not-found' )->params( $path )->plain()
-			);
-		}
-		$this->config = FormatJson::decode(
-			file_get_contents( $path ),
-			true
-		);
-
-		if ( $this->config === false || count( $this->config ) === 0 ) {
-			throw new MWException(
-				"Could not parse configuration file '$path'!"
-			);
-		}
+	public function __construct( $configProvider ) {
+		$this->config = $configProvider->getConfigArray();
 	}
 
 	/**
@@ -114,9 +100,14 @@ class DomainConfigFactory {
 		if ( self::$instance === null ) {
 			$extensionConfig = MediaWikiServices::getInstance()
 				->getConfigFactory()->makeConfig( 'ldapprovider' );
-			self::$instance = new self(
-				$extensionConfig->get( Config::DOMAIN_CONFIGS )
+
+			$callback = $extensionConfig->get( Config::DOMAIN_CONFIG_PROVIDER );
+			$configProvider = call_user_func_array(
+				$callback,
+				[ $extensionConfig ]
 			);
+
+			self::$instance = new self( $configProvider );
 		}
 		return self::$instance;
 	}
