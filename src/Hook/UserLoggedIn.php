@@ -119,7 +119,7 @@ abstract class UserLoggedIn {
 	 */
 	protected function findDomainForUser() {
 		$userDomainStore = new UserDomainStore(
-			MediaWikiServices::getInstance()->getDBLoadBalancer()
+			wfGetLB()
 		);
 
 		$this->domain = $userDomainStore->getDomainForUser( $this->user );

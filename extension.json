@@ -15,57 +15,30 @@
 			"i18n"
 		]
 	},
-	"AutoloadNamespaces": {
-		"MediaWiki\\Extension\\LDAPProvider\\Tests\\" : "tests/phpunit/",
-		"MediaWiki\\Extension\\LDAPProvider\\Maintenance\\" : "maintenance/",
-		"MediaWiki\\Extension\\LDAPProvider\\" : "src/"
-	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates": "MediaWiki\\Extension\\LDAPProvider\\Hook\\LoadExtensionSchemaUpdates::callback"
 	},
-	"config_prefix": "LDAPProvider",
 	"config": {
-		"CacheType": {
-			"value": "CACHE_ANYTHING",
-			"description": "The sort of cache to use for the connection information.",
-			"descriptionmsg": "ldapprovider-config-cachetype"
-		},
-		"CacheTime": {
-			"value": 500,
-			"description": "How long cached items should stick around in seconds",
-			"descriptionmsg": "ldapprovider-config-cachetime"
-		},
-		"ClientRegistry": {
-			"value": [],
-			"description": "Allows registration of custom clients",
-			"descriptionmsg": "ldapprovider-config-clientregistry"
-		},
-		"DomainConfigs": {
-			"value": "/etc/mediawiki/ldapprovider.json",
-			"public": false,
-			"path": false,
-			"description": "Stores per domain configuration",
-			"descriptionmsg": "ldapprovider-config-domainconfigs"
-		}
+		"_prefix": "LDAPProvider",
+		"CacheType": "CACHE_ANYTHING",
+		"CacheTime": 500,
+		"ClientRegistry": [],
+		"DomainConfigs": "/etc/mediawiki/ldapprovider.json"
 	},
 	"ConfigRegistry": {
 		"ldapprovider": "MediaWiki\\Extension\\LDAPProvider\\Config::newInstance"
 	},
-	"attributes": {
-		"LDAPProvider": {
-			"DefaultSettings": {
-				"connection": {
-					"port": 389,
-					"options": [],
-					"enctype": "clear",
-					"groupbasedn": "",
-					"userbasedn": "",
-					"searchattribute": "",
-					"searchstring": ""
-				}
-			}
+	"LDAPProviderDefaultSettings": {
+		"connection": {
+			"port": 389,
+			"options": [],
+			"enctype": "clear",
+			"groupbasedn": "",
+			"userbasedn": "",
+			"searchattribute": "",
+			"searchstring": ""
 		}
 	},
-	"load_composer_autoloader" : true,
-	"manifest_version": 2
+	"load_composer_autoloader": true,
+	"manifest_version": 1
 }

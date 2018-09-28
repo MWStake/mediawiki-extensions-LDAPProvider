@@ -2,7 +2,7 @@
 
 namespace MediaWiki\Extension\LDAPProvider;
 
-use Wikimedia\Rdbms\LoadBalancer;
+use LoadBalancer;
 use User;
 
 class UserDomainStore {

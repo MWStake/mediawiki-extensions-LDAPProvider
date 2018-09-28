@@ -55,5 +55,12 @@
 			"minus-x fix . || :",
 			"phpcbf"
 		]
+	},
+	"autoload" : {
+		"psr-4": {
+			"MediaWiki\\Extension\\LDAPProvider\\Tests\\" : "tests/phpunit",
+			"MediaWiki\\Extension\\LDAPProvider\\Maintenance\\" : "maintenance",
+			"MediaWiki\\Extension\\LDAPProvider\\" : "src"
+		}
 	}
 }
