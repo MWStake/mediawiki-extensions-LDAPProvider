@@ -296,7 +296,7 @@ class Client {
 		$this->init();
 		return $this->cache->getWithSetCallback(
 			$this->cache->makeKey(
-				"ldap-provider", "user-info", $username, $groupBaseDN, time()
+				"ldap-provider", "user-info", $username, $groupBaseDN
 			),
 			$this->cacheTime,
 			function () use ( $username ) {
