@@ -28,7 +28,7 @@ class InlinePHPArray implements IDomainConfigProvider {
 
 	/**
 	 *
-	 * @param array $config
+	 * @param array $config The config to be used
 	 */
 	public function __construct( $config ) {
 		$this->configArray = $config;
@@ -39,6 +39,6 @@ class InlinePHPArray implements IDomainConfigProvider {
 	 * @return array
 	 */
 	public function getConfigArray() {
-		return  $this->configArray;
+		return $this->configArray;
 	}
 }

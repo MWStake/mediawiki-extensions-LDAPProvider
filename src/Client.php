@@ -284,7 +284,7 @@ class Client {
 	public function canBindAs( $username, $password ) {
 		$this->init();
 		$username = $this->getSearchString( $username );
-		return $this->connection->bind( $username, $password);
+		return $this->connection->bind( $username, $password );
 	}
 
 	/**
