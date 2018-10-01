@@ -24,7 +24,7 @@ class GroupList {
 	/**
 	 * @var array
 	 */
-	protected $fullMap;
+	protected $fullMaap;
 
 	/**
 	 * @param array $fullDNs the full DNs to handle
