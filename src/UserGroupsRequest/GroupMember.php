@@ -25,7 +25,7 @@ class GroupMember extends UserGroupsRequest {
 			$baseDN, [ $dn ]
 		);
 		$ret = [];
-		foreach( $groups as $key => $value ) {
+		foreach ( $groups as $key => $value ) {
 			if ( is_int( $key ) ) {
 				$ret[] = $value[$dn];
 			}

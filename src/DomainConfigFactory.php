@@ -25,7 +25,6 @@ use HashConfig;
 use MWException;
 use MediaWiki\MediaWikiServices;
 use MultiConfig;
-use MediaWiki\Extension\LDAPProvider\Config;
 
 class DomainConfigFactory {
 
