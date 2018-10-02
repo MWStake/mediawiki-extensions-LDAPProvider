@@ -43,7 +43,7 @@ class CheckConnection extends Maintenance {
 		$this->showResult( $res );
 	}
 
-	public function showResult( array $res ) {
+	private function showResult( array $res ) {
 		$this->output( "Found ". $res['count'] ." match(es).\n" );
 
 		foreach ( $res as $index => $val ) {
@@ -53,7 +53,7 @@ class CheckConnection extends Maintenance {
 		}
 	}
 
-	public function showValue( array $obj ) {
+	private function showValue( array $obj ) {
 		$this->output( "dn: " . $obj['dn'] . "\n" );
 
 		foreach ( $obj as $key => $val ) {

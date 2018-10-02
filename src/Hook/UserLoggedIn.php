@@ -34,7 +34,7 @@ abstract class UserLoggedIn {
 
 	/**
 	 *
-	 * @var Client
+	 * @var \MediaWiki\Extension\LDAPProvider\Client
 	 */
 	protected $ldapClient = null;
 

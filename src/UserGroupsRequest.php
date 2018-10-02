@@ -33,14 +33,16 @@ abstract class UserGroupsRequest {
 		$this->groupBaseDN = $config->get( ClientConfig::GROUP_BASE_DN );
 	}
 
-	public static function groupFactory( $groupConfig, $ldapClient, Config $config ) {
-		$type = $groupConfig->get( GroupConfig::GROUP_TYPE );
-		$class = 'MediaWiki\Extension\LDAPProvider\UserGroupsRequest' . "\\" . $type;
-		if ( class_exists( $class ) ) {
-			return new $class( $ldapClient, $config );
-		}
-
-		throw new MWException( "Class for $type does not exist!" );
+	/**
+	 *
+	 * @param Client $ldapClient
+	 * @param Config $config
+	 * @return UserGroupsRequest
+	 * @throws MWException
+	 */
+	public static function factory( $ldapClient, Config $config ) {
+		$request = new static( $ldapClient, $config );
+		return $request;
 	}
 
 	/**
