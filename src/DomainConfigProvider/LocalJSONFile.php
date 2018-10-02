@@ -35,7 +35,7 @@ class LocalJSONFile implements IDomainConfigProvider {
 
 	/**
 	 *
-	 * @param string $jsonFilePath
+	 * @param string $jsonFilePath The absolute path to the JSON file
 	 */
 	public function __construct( $jsonFilePath ) {
 		if ( !is_readable( $jsonFilePath ) ) {
@@ -51,7 +51,6 @@ class LocalJSONFile implements IDomainConfigProvider {
 
 		if ( $this->configArray === false
 			|| count( $this->configArray ) === 0 ) {
-
 			throw new MWException(
 				"Could not parse configuration file '$jsonFilePath'!"
 			);
@@ -67,7 +66,7 @@ class LocalJSONFile implements IDomainConfigProvider {
 
 	/**
 	 *
-	 * @param Config $ldapConfig
+	 * @param Config $ldapConfig The config to be used
 	 * @return JSonfile
 	 */
 	public static function newInstance( $ldapConfig ) {

@@ -59,7 +59,7 @@ class GroupList {
 	 */
 	public function getMWNames() {
 		if ( !$this->mwNames ) {
-			$this->mwNames = array_filter( array_map( function( $group ) {
+			$this->mwNames = array_filter( array_map( function ( $group ) {
 				$map = $this->getDNMap();
 				if ( isset( $map[$group] ) ) {
 					return $map[$group];
@@ -70,7 +70,6 @@ class GroupList {
 
 	/**
 	 * Get the list of Groups that are mananaged by LDAPGroups
-	 * @param string $domain
 	 * @return array
 	 */
 	public function getGroups() {

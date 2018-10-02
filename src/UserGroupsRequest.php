@@ -3,7 +3,6 @@
 namespace MediaWiki\Extension\LDAPProvider;
 
 use Config;
-use MediaWiki\Extension\LDAPGroups\Config as GroupConfig;
 use MWException;
 
 abstract class UserGroupsRequest {
@@ -35,8 +34,8 @@ abstract class UserGroupsRequest {
 
 	/**
 	 *
-	 * @param Client $ldapClient
-	 * @param Config $config
+	 * @param Client $ldapClient The client to be used
+	 * @param Config $config The config to be used
 	 * @return UserGroupsRequest
 	 * @throws MWException
 	 */
